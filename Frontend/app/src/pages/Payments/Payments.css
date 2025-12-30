@@ -1,0 +1,279 @@
+.root{
+    padding: 0px;
+}
+
+#payment-container{
+margin-left: 50px;
+}
+
+/* Overall top card  */
+.info-card {
+    color: white;
+    padding: 18px;
+    height: 100px;
+    width: 300px;
+    margin-right: 30px;
+    border-radius: 8px;
+}
+.info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    font-size: 14px;
+}
+.info-value {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+#payment-main-table{
+    padding: 50px 0px 50px 20px;
+}
+/* Main table heading  */
+.payment-header h3 {
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+/* Sub table heading  */
+.payment-header h5 {
+    font-weight: 300;
+    opacity: 0.9;
+}
+
+/* Table style */
+.payment-table {
+    width: 98%;
+    border-collapse: separate;
+    border-spacing: 0 20px;
+}
+/* Table top row  */
+.payment-table thead tr th {
+    background: #cbcdcf;
+    padding: 14px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+    text-transform: uppercase;
+    border-bottom: 2px solid #e4e7eb;
+}
+/* Table rows  */
+.payment-table tbody tr {
+    background: #ffffff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+.payment-table tbody tr:hover{
+    background: #f6f5f5;
+}
+/* Table row data cells */
+.payment-table tbody tr td {
+    padding: 14px;
+    font-size: 15px;
+    color: #444;
+    border-top: 1px solid #f0f0f0;
+}
+
+/* Status Badges */
+.status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.status.paid {
+    background: #d4f8dd;
+    color: #0a8a29;
+}
+
+.status.pending {
+    background: #fff3cd;
+    color: #ca8a04;
+}
+
+.status.overdue {
+    background: #fde2e1;
+    color: #b4231a;
+}
+
+/* Buttons */
+.action-btns {
+    display: flex;
+    gap: 8px;
+}
+
+.btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+/* Receipt button */
+.btn-receipt {
+    background: #e9edf9;
+    color: #2b59ff;
+}
+
+/* Mark Paid */
+.btn-paid {
+    background: #d4f8dd;
+    color: #0a8a29;
+}
+
+/* Edit */
+.btn-edit {
+    background: #eef2ff;
+    color: #4f46e5;
+}
+
+/* Delete */
+.btn-delete {
+    background: #fde2e1;
+    color: #b4231a;
+}
+.btn:hover {
+    opacity: 0.85;
+}
+/* Add Buton  */
+#payment-add-button{
+    width: 150px;
+    height: 50px;
+    font-size: 18px;
+    position: relative; top: 10px; left: 45px;
+}
+
+
+/* Receipt Modal  */
+
+/* BACKDROP */
+.receipt-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+}
+
+.modal-backdrop.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* RECEIPT CARD */
+.receipt-modal {
+    width: 420px;
+    animation: fadeIn 0.3s ease;
+    z-index: 2001;
+}
+
+.receipt-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 25px rgba(0,0,0,0.25);
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.receipt-header {
+    text-align: center;
+}
+
+.receipt-header h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.receipt-header p {
+    margin: 0;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.row-detail {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+}
+
+.total-row {
+    font-size: 18px;
+}
+
+.receipt-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.receipt-table th,
+.receipt-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.receipt-table th {
+    background: #f0f0f0;
+}
+
+.footer-note {
+    margin-top: 20px;
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+}
+
+.receipt-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+@keyframes fadeIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* for printing full image */
+@media print {
+
+  /* Hide everything except the receipt card */
+  body * {
+    visibility: hidden;
+  }
+
+  .receipt-card, 
+  .receipt-card * {
+    visibility: visible;
+  }
+
+  /* Position card at top */
+  .receipt-card {
+    border: 2px solid black;
+    width: 100%;
+    margin: 0;
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  /* Ensure no dark backdrop is printed */
+  .receipt-backdrop {
+    background: #fff;
+  }
+
+  /* Remove buttons in print */
+  .receipt-actions {
+    display: none;
+  }
+}
+
+

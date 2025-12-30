@@ -1,0 +1,97 @@
+#root {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body.light-theme {
+    --bg-main: #fcf7f7;
+    --bg-sidebar: #ece9e9;
+    --bg-topbar: #ece9e9;
+    --text-main: #000;
+    --text-inverse: #fff;
+    --bg-content: white;
+    --hover-sidebar: #b5b2b2;
+} 
+
+body.dark-theme {
+    --bg-main: #121212;
+    --bg-sidebar: #1f1f1f;
+    --bg-topbar: #1f1f1f;
+    --text-main: wheat;
+    --text-inverse: #fff;
+    --bg-content: rgb(171, 163, 163);
+    --hover-sidebar: #333;
+}
+
+* {
+    transition: 
+        background-color 0.6s ease,
+        color 0.6s ease,
+        border-color 0.6s ease,
+        box-shadow 0.6s ease;
+}
+
+/* PG name Title  */
+#title{
+    color: var(--text-main);
+    background: none;
+    position: relative; right: 15px;
+}
+/* DashBoard Topbar */
+.topbar {
+    height: 65px;
+    width: 100%;
+    background: var(--bg-topbar);
+    color: var(--text-main);
+    border-bottom: 1px solid #000000;
+    position: fixed;
+    z-index: 1;
+}
+/* Topbar-search  */
+.searchbox {
+    width: 32%;
+}
+/* Logged in as--- */
+.loggeduser {
+    color: var(--text-main);
+    position: relative; left: 700px;
+    padding: 8px 15px;
+    border-radius: 8px;
+}
+/* Left side bar menu  */
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    background: var(--bg-sidebar);
+    color: var(--text-main);
+    padding-top: 20px;
+    position: fixed;
+    left: 0;
+    top: 65px;
+}
+/* Left side bar menu  */
+.side-menu {
+    list-style: none;
+    padding-left: 0;
+}
+/* Left side bar menu List items */
+.side-menu li {
+    padding: 12px 20px;
+    cursor: pointer;
+}
+.side-menu li:hover {
+    background: var(--hover-sidebar);
+}
+/* Content area where diff pages show  */
+.content-area {
+    margin-left: 220px;
+    margin-top: 65px;
+    padding: 30px;
+    width: calc(100% - 220px);
+    min-height: 100vh;
+    background: var(--bg-content);
+    color: black;
+}
+
+

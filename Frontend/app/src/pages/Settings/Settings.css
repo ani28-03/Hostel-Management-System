@@ -1,0 +1,200 @@
+/* Light and Dark theme variables */
+body.light-theme {
+    --settings-bg: rgba(169, 168, 168, 0.244);
+    --settings-border: rgba(100, 100, 100, 0.5);
+    --bg-theme-button: wheat;
+    --text-theme-button: black;
+    --bg-hover-button:rgb(51, 47, 47);
+    --text-hover-button: white;
+}
+
+body.dark-theme {
+    --settings-bg: #1f1f1f;
+    --settings-border: #333;
+    --bg-theme-button: rgb(51, 47, 47);
+    --text-theme-button: white;
+    --bg-hover-button: wheat;
+    --text-hover-button: black;
+}
+/* Transition for theme */
+* {
+    transition: 
+        background-color 0.6s ease,
+        color 0.6s ease,
+        border-color 0.6s ease,
+        box-shadow 0.6s ease;
+}
+
+#setting-title{
+    color: black;
+}
+#tabs{
+    width: 200%;
+}
+
+#profile-tab{
+    height: 300px;
+}
+/* profile photo */
+#profile{
+    position: relative; left: 600px; top: 50px;
+    width: 200px;
+    border-radius: 180px;
+    margin-top: -70px;
+    margin-left: -80px;
+    transition: transform 0.9s ease, box-shadow 0.9s ease;
+    /* border: 2px solid var(--profile-border); */
+    border: 2px solid black;
+    box-shadow: 0px 2px 2px 2px rgba(0,0,0,0.3);
+}
+/* profile animation */
+#profile:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 2px 20px 5px rgb(35, 34, 34);
+}
+/* all the tabs */
+.settings-item{
+    margin: 20px 0px 0px 50px;
+    padding: 20px 0px 10px 20px;
+    background-color: rgb(229, 229, 229);
+    height: 80px;
+    width: 100%;
+    border-radius: 20px; border: 2px solid rgba(169, 168, 168, 0.734);
+    /* box-shadow:5px 5px 15px 2px; */
+    /* align-items: center; */
+    
+}
+/* Theme buttons */
+.theme-div{
+    position: relative; top: -48px; left: 500px;
+    font-size: 24px;
+    font-family:'Trebuchet MS';
+}
+/* Theme buttons */
+.theme-opt{
+    margin-right: 50px;
+    border:2px solid rgb(194, 193, 193);
+    border-radius: 10px;
+    padding: 5px 15px 5px 15px;
+    cursor: pointer;
+}
+/* Theme radial buttons */
+.theme-opt input{
+    display: none;
+}
+/* Theme button-not clicked hover */
+.theme-opt:hover{
+    background-color: var(--bg-hover-button);
+    color: var(--text-hover-button);
+}
+/* Theme button clicked */
+.theme-opt:has(input:checked){
+    background-color: var(--bg-theme-button);
+    color: var(--text-theme-button);
+    /* border:2px solid rgb(255, 0, 0); */
+}
+/* Password tab */
+.settings-item-password{
+    margin: 20px 0px 0px 50px;
+    padding: 20px 0px 10px 20px;
+    background-color: rgb(229, 229, 229);
+    width: 100%;
+    border-radius: 20px; border: 2px solid rgba(169, 168, 168, 0.734);
+    align-items: center;
+    min-height: 80px;    
+    transition: max-height 0.4s ease, padding 0.3s ease;
+    overflow: hidden;
+    max-height: 80px;    
+}
+/* Password tab after expanding */
+.settings-item-password.expanded {
+    max-height: 600px;  
+    padding-bottom: 20px;
+}
+/* Password expand animation */
+.password-container {
+    margin-top: 10px;
+    animation: expand 0.3s ease;
+}
+/* Password tab transition */
+.password-content {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+/* Password tab transition */
+.settings-item-password.expanded .password-content {
+    opacity: 1;
+    transform: translateY(0);
+}
+/* New/Confirm password  */
+.setting-password{
+    margin: 10px;
+    position: relative; top: 40px; left: 140px;
+    font-size: 18px;
+}
+/* New/Confirm password  Input form*/
+.setting-password input{
+    background-color: white;
+    color: black;
+}
+/* New Password Input form */
+#newPassword{
+ margin-left: 50px;
+}
+/* Confirm Password Input form */
+#confirmPassword{
+ margin-left: 70px;
+}
+/* update Button  */
+#updateButton{
+    position: relative; left: 600px; bottom: 15px;
+}
+/* Password Header text */
+.password-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+/* Show Current Password */
+#currPassword{
+    background: none;
+    color: black;
+    border: none;
+    font-size: 26px;
+    position: relative; left: 40px; bottom: 3px;
+}
+/* font-awsome Eye */
+.show-password{
+    position: relative; right: 355px; bottom: 2px;
+    font-size: 22px;
+}
+/* Password edit Icon  */
+.edit-icon {
+    cursor: pointer;
+    position: relative; right: 30px;
+    font-size: 22px;
+    transition: transform 0.3s ease;
+}
+/* Password edit Icon Transition*/
+.edit-icon:hover {
+    transform: scale(1.2);
+}
+/* change password text  */
+#changePassword{
+    color: blue;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+/* IDK */
+@keyframes expand {
+    from {
+        opacity: 0;
+        transform: scaleY(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scaleY(1);
+    }
+}
+

@@ -1,0 +1,128 @@
+body.light-theme {
+    --bg-cards:rgb(241, 240, 240);
+    --text-cards:black;
+    --text-edit-btn:rgb(255, 255, 255);
+}
+
+body.dark-theme {
+    --bg-cards:#1f1f1f;
+    --text-cards:white;
+    --text-edit-btn:rgb(93, 91, 91);
+}
+
+#room-col-card{
+    padding: 80px 150px 50px 150px;
+    z-index: 0;
+}
+
+.room-card-body{
+    background-color: var(--bg-cards);
+    color: var(--text-cards);
+    transition: transform 0.8s ease, box-shadow 0.8s ease;
+    box-shadow: 0px 4px 8px 5px rgba(0,0,0,0.3);
+    height: 530px;
+}
+
+.room-card-body:hover {
+    transform: scale(1.01);
+    box-shadow: 0px 3px 20px 5px rgb(35, 34, 34);
+}
+
+#room-photo{
+    border: 1px solid var(--text-cards);
+    padding: 0%;
+    width: 200px;
+    position: relative; left: 25px; top: 15px;
+}
+
+#room_no{
+    padding: 0%;
+    align-content: center;
+    height: 60px;
+    position: relative; left: 50px; top: 20px;
+}
+
+/* room status (vacant,coccupied, under maintenance) */
+#room-status{
+    align-content: center;
+    height: 30px;
+    width: 105px;
+    position: relative; top: 70px; right: 85px;
+}
+
+.room-status{
+    padding: 2px 5px 2px 5px;
+}
+
+#room-info{
+    width: 450px; height: 80px;
+    margin: 30px 30px 0px 30px;
+    padding: 5px;
+}
+
+.room-type{
+    text-align: center;
+}
+
+.room-deposit, .room-rent{
+    padding-top: 10px;
+}
+
+.room-tenant-details{
+    padding: 5px 5px 5px 35px;
+}
+
+#amenities{
+    padding: 5px 5px 15px 35px;
+    font-size: 12px;
+}
+
+.room-amenities{
+    color: black;
+    background-color: rgb(220, 217, 217);
+    padding: 3px 8px 3px 8px;
+    border-radius: 10%;
+}
+
+#room-edit-btn{
+    background-color: var(--text-edit-btn);
+    color: black;
+    border-color:rgb(175, 172, 172);
+    /* position: relative;  top: 90px; */
+    width: 100%;
+}
+#room-edit-btn:hover{
+    background-color: rgb(229, 230, 230);
+}
+/* delete button  */
+#room-delete-btn{
+    /* position: relative; top: 90px; */
+    color: red;
+    background-color: var(--text-edit-btn);
+}
+#room-delete-btn:hover{
+    color: white;
+    background-color: rgb(243, 70, 70);
+}
+
+/*form for ADD button collapse  */
+#room-add-button{
+    width: 150px;
+    height: 50px;
+    font-size: 18px;
+    position: relative; top: 10px; left: 48px;
+}
+.collapse-form {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: all 0.4s ease;
+    padding: 0 5px;
+}
+.collapse-form.open {
+    max-height: 900px;
+    opacity: 1;
+    padding: 10px 5px;
+}
+
+

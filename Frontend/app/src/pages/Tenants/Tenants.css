@@ -1,0 +1,122 @@
+body.light-theme {
+    --bg-cards:rgb(241, 240, 240);
+    --text-cards:black;
+    --text-edit-btn:rgb(255, 255, 255);
+}
+
+
+body.dark-theme {
+    --bg-cards:#1f1f1f;
+    --text-cards:wheat;
+    --text-edit-btn:rgb(93, 91, 91);
+}
+
+#tenant-col-card{
+    padding: 80px 40px 50px 40px;
+    z-index: 0;
+}
+
+/* cards  */
+#tenant-card-body{
+    transition: transform 0.8s ease, box-shadow 0.8s ease;
+    background-color: var(--bg-cards);
+    color: var(--text-cards);
+    height: 380px;
+    margin-left: 20px; margin-bottom: 20px;
+    box-shadow: 0px 4px 8px 5px rgba(0,0,0,0.3);
+    border-radius: 15px;
+}
+/* card animation */
+#tenant-card-body:hover {
+    transform: scale(1.01);
+    box-shadow: 0px 3px 20px 5px rgb(35, 34, 34);
+}
+/* profile photos */
+.profile{
+    position: relative; left: 20px; top: 15px;
+    width: 100px;
+    border-radius: 50%;
+    border: 2px solid var(--text-cards);
+}
+/* email, mobile no, designation */
+.tenant-details{
+    position: relative; left: 20px; top: 30px;
+}
+/* Tenant name  */
+#tenant-name{
+    position: relative; top: 25px;
+    font-size: 22px;
+    width: 130px;
+}
+/* Tenant Id  */
+#tenant-id{
+    align-content: center;
+    justify-items: center;
+}
+/* Tenant ID text  */
+#tenant-id h5{
+    padding: 8px;
+    margin-bottom: 20px;
+    width: 85px;
+    font-size: 20px;
+    border: 2px dotted var(--text-cards);
+}
+/* Tenant room no  */
+#tenant-room-no{
+    position: relative; top: 7px; left: 48px;
+}
+/* Room rent and deposit  */
+.price{
+    position: relative; top: 70px;
+}
+
+/* Payment-status color (active, pending) */
+#payment-status{
+    border-radius: 10%;
+    padding: 0px 4px 2px 4px;
+    position: relative; top: 30px; right: 5px;
+}
+/* Edit button  */
+#tenant-edit-btn{
+    background-color: var(--text-edit-btn);
+    color: black;
+    border-color:rgb(175, 172, 172);
+    position: relative;  top: 90px;
+    width: 95%;
+}
+#tenant-edit-btn:hover{
+    background-color: rgb(229, 230, 230);
+}
+/* delete button  */
+#tenant-delete-btn{
+    position: relative; top: 90px; right: 30px;
+    color: red;
+    background-color: var(--text-edit-btn);
+}
+#tenant-delete-btn:hover{
+    color: white;
+    background-color: rgb(243, 70, 70);
+}
+
+/* New Entry form  */
+#col-form{
+    background: var(--bg-cards);
+    color: var(--text-cards);
+    padding: 64px 20px 50px 20px;
+    height: 120%;
+    width: 300px;
+    position: fixed; left: 1605px; top: 65px;
+
+}
+/* Make calendar icons black color  */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1); /* makes icon white */
+}
+
+/*form for ADD button collapse  */
+#tenant-add-button{
+    width: 150px;
+    height: 50px;
+    font-size: 18px;
+    position: relative; top: 10px; left: 48px;
+}

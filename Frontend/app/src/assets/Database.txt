@@ -1,0 +1,75 @@
+CREATE DATABASE project; 
+USE project; 
+CREATE TABLE booking_info ( booking_id INT PRIMARY KEY auto_increment, guest_name VARCHAR(100), room_no VARCHAR(10), check_in_date DATE, check_out_date DATE, email varchar(50), mobile varchar(50), designation varchar(50)); 
+INSERT INTO booking_info (guest_name, room_no, check_in_date, check_out_date, email, mobile, designation)
+VALUES
+('Anjali Gupta', '101', '2025-03-06', '2025-03-08','anjaligupta@gmail.com' ,9233445276,'software engineer'),
+('Rajesh Pillai', '102', '2025-03-03', '2025-03-04','rajeshpillai@gmail.com',9745627646,'teacher'),
+('Neha Singh', '105', '2025-03-06', '2025-03-10','nehasingh@gmail.com',7834527913,'doctor'),
+('Vikram Rao', '201', '2025-03-07', '2025-03-10','vikramrao@gmail.com',8834625697,'postmaan'),
+('Pooja Jain', '202', '2025-03-08', '2025-03-11','poojajain@gmail.com',8593454234,'software engineer'),
+('Rohit Mehra', '304', '2025-03-09', '2025-03-12','rohitmehra@gmail.com',9965734356,'marketing manager'),
+('Divya Patel', '303', '2025-03-10', '2025-03-13','divyapatel@gmail.com',7745239870,'nurse');
+
+select * from booking_info;
+
+********************************** Login data **********************************
+
+USE project;
+create table logging_info (guest_name varchar(50) not null, username VARCHAR(100) not null, password VARCHAR(100) not null,isAdmin boolean);
+INSERT INTO logging_info (guest_name,username, password, isAdmin) VALUES
+('Anirudh Deshmukh','anirudh','anirudh123',true),
+('Anjali Gupta','student','student123',false),
+('Divya Patel','student','student123',false),
+('Neha Singh','student','student123',false),
+('Pooja Jain','student','student123',false),
+('Rajesh Pillai','student','student123',false),
+('Rohit Mehra','student','student123',false),
+('Vikram Rao','student','student123',false);
+
+
+select * from logging_info;
+
+********************************** Rooms data **********************************
+
+CREATE DATABASE project; 
+USE project;
+
+CREATE TABLE rooms (room_no varchar(20) PRIMARY KEY, floor int, type varchar(50), rent int, deposit int, ac bool, wifi bool, tv bool, parking bool , meals bool ); 
+INSERT INTO rooms (room_no, floor, type, rent, deposit, ac, wifi, tv, parking, meals)
+VALUES ('101',1,"single",8000,16000,1,1,1,0,0),
+('102',1,"single",10000,20000,1,1,1,0,0),
+('103',1,"single",12000,24000,1,1,1,0,0),
+('104',1,"double",23000,46000,1,1,1,1,0),
+('105',1,"double",28000,56000,1,1,1,1,0),
+
+('201',2,"single",12000,24000,1,1,1,0,0),
+('202',2,"single",8000,16000,1,1,1,0,0),
+('203',2,"single",14000,28000,1,1,1,0,1),
+('204',2,"double",28000,56000,1,1,1,1,1),
+('205',2,"double",26000,52000,1,1,1,1,1),
+
+('301',3,"single",12500,25000,1,1,1,0,0),
+('302',3,"single",14000,28000,1,1,1,0,1),
+('303',3,"single",8000,16000,1,1,1,0,0),
+('304',3,"double",32000,64000,1,1,1,1,1),
+('305',3,"double",28000,56000,1,1,1,1,1);
+
+select * from rooms;
+
+********************************** Tenant Payments **********************************
+
+create table payments (payment_id int primary key auto_increment, room_no varchar(50), type VARCHAR(100),amount int, due_date date, paid_date datetime, isPaid bool);
+INSERT INTO payments (room_no, type, amount, due_date, paid_date, isPaid) VALUES
+('101','rent',8000,'2025-12-02','2025-11-28 18:42:10',true),
+('102','rent',10000,'2025-12-01','2025-11-25 16:25:30',true),
+('105','rent',28000,'2025-11-25',null,false),
+('201','rent',12000,'2025-12-10',null,false),
+('201','electricity',1100,'2025-12-10','2025-12-03 19:13:41',true);
+
+select * from payments;
+
+********************************** Join Queries **********************************
+
+select * from booking_info left join rooms on booking_info.room_no = rooms.room_no;
+select * from rooms left join booking_info on rooms.room_no = booking_info.room_no;
