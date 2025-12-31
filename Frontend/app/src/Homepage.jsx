@@ -83,6 +83,24 @@ export default function Homepage(){
         setNewuser({...newuser, [event.target.name]:event.target.value});
     };
 
+    const handleAadharChange = (e) => {
+  let value = e.target.value;
+
+  value = value.replace(/\D/g, '');
+
+  if (value.length > 4 && value.length <= 8) {
+    value = value.replace(/(\d{4})(\d+)/, '$1-$2');
+  } else if (value.length > 8) {
+    value = value.replace(/(\d{4})(\d{4})(\d+)/, '$1-$2-$3');
+  }
+
+  setNewuser({
+    ...newuser,
+    aadhar: value
+  });
+};
+
+
     const handleRegister=async()=>{
         const {guest_name,newUsername,newPassword,isAdmin} =newuser;
         if(!guest_name||!newUsername||!newPassword){
@@ -942,7 +960,7 @@ export default function Homepage(){
                       Female <input type="radio" className="mb-2 me-3" name='gender' value={newuser.gender} onChange={handleUserChange}/>
                       others <input type="radio" className="mb-2" name='gender' value={newuser.gender} onChange={handleUserChange}/><br/>
                   Date of Birth<span className='text-danger'>*</span><input type="date" className="form-control mb-2" name='dob' value={newuser.dob} onChange={handleUserChange}/>
-                  Aadhar<span className='text-danger'>*</span><input type="text" className="form-control mb-2" name='aadhar' value={newuser.aadhar} placeholder="Aadhar Number" onChange={handleUserChange}/>
+                  Aadhar<span className='text-danger'>*</span><input type="text" className="form-control mb-2" name="aadhar" value={newuser.aadhar} placeholder="XXXX-XXXX-XXXX" maxLength={14} onChange={handleAadharChange}/>                
                 </div>
               </div>
                 {/* <hr/> */}
