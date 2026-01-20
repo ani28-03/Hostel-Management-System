@@ -19,6 +19,7 @@ export default function Homepage(){
     const [savedGuest_name, setsavedGuest_name] = useState("");
 
     const [rooms,setRooms] = useState([]);
+    const [selectedRoom, setSelectedRoom] = useState(null); //for booking a room by student
 
     const [student,setStudent] = useState({
       guest_name:"",
@@ -590,7 +591,7 @@ export default function Homepage(){
                           {isStudentLoggedIn?(
                             <div className="row">
                             <div className="col-md-9"></div>
-                            <button className='col-md-2 bg-warning text-black' data-bs-toggle="modal" data-bs-target="#userInfoModal">
+                            <button className='col-md-2 bg-warning text-black' data-bs-toggle="modal" data-bs-target="#userInfoModal" onClick={() => setSelectedRoom(room)}>
                               Select Room
                             </button>
                           </div>
@@ -979,7 +980,7 @@ export default function Homepage(){
                   Designation<span className='text-danger'>*</span><input type="text" className="form-control mb-2" name='designation' value={student.designation} placeholder="Designation" onChange={handleStudentChange}/>
                   Company name<span className='text-danger'>*</span><input type="text" className="form-control mb-2" name='org_name' value={newuser.org_name} placeholder="Company name" onChange={handleUserChange}/>
                   <br></br>
-                  Expected Move-in Date<span className='text-danger'>*</span><input type="date" className="form-control mb-2" name='dob' value={newuser.dob} onChange={handleUserChange}/>
+                  Expected Move-in Date<span className='text-danger'>*</span><input type="date" className="form-control mb-2" name='temp_check_in' value={newuser.temp_check_in} min={selectedRoom.check_out_date} max={selectedRoom.check_out_date+15} onChange={handleUserChange}/>
                 </div>
               </div>
               
