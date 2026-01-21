@@ -61,11 +61,11 @@ export default function Dashboard(){
                     <ul className="side-menu">
                         <li onClick={() => setActiveTab("tab1")}><FontAwesomeIcon icon={['far', 'house']} /> Dashboard</li>
                         <li onClick={() => setActiveTab("tab2")}><FontAwesomeIcon icon={['fas', 'bed']} /> Rooms</li>
-                        <li onClick={() => setActiveTab("tab3")}>👥 Tenants</li>
-                        <li onClick={() => setActiveTab("tab4")}>💳 Payments</li>
-                        <li onClick={() => setActiveTab("tab5")}>🔧 Maintenance</li>
-                        <li onClick={() => setActiveTab("tab6")}>📊 Complaints</li>
-                        <li onClick={() => setActiveTab("tab7")}>⚙ Settings</li>
+                        <li onClick={() => setActiveTab("tab3")}><FontAwesomeIcon icon={['far', 'user']} /> Tenants</li>
+                        <li onClick={() => setActiveTab("tab4")}><FontAwesomeIcon icon={['fas', 'receipt']} /> Payments</li>
+                        <li onClick={() => setActiveTab("tab5")}><FontAwesomeIcon icon={['fas', 'wrench']} /> Maintenance</li>
+                        <li onClick={() => setActiveTab("tab6")}><FontAwesomeIcon icon={['far', 'comment-dots']} /> Complaints</li>
+                        <li onClick={() => setActiveTab("tab7")}><FontAwesomeIcon icon={['fas', 'gear']} /> Settings</li>
                     </ul>
                 </div>
 
@@ -75,7 +75,7 @@ export default function Dashboard(){
                     {activeTab === "tab3" && <div className="tabContent"> <div><Tenants/></div> </div>}
                     {activeTab === "tab4" && <div className="tabContent"> <div><Payments/></div> </div>}
                     {activeTab === "tab5" && <div className="tabContent"> <h1>Maintenance</h1> </div>}
-                    {activeTab === "tab6" && <div className="tabContent"> <h1>Reports</h1> </div>}
+                    {activeTab === "tab6" && <div className="tabContent"> <h1>Complaints</h1> </div>}
                     {activeTab === "tab7" && <div className="tabContent"> <div><Settings/></div> </div>}
                 </div>
             </div>
