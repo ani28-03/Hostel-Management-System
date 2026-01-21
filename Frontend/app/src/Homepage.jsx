@@ -20,6 +20,7 @@ export default function Homepage(){
 
     const [rooms,setRooms] = useState([]);
     const [selectedRoom, setSelectedRoom] = useState(null); //for booking a room by student
+    const [photo, setPhoto] = useState(null);
 
     const [student,setStudent] = useState({
       guest_name:"",
@@ -136,10 +137,6 @@ export default function Homepage(){
         alert(`Welcome ${newuser.guest_name}!! Login in again to Sign-In!!`);
     };
 
-    const handleBooking=()=>{
-      
-    }
-
 
     // Login handles
     const handlelogin = async()=>{
@@ -188,9 +185,38 @@ export default function Homepage(){
     }
     }
 
+  const handleBooking = async () => {
+  if (!photo) {
+    alert("Please upload a photo");
+    return;
+  }
+
+  const formData = new FormData();
+
+  formData.append("guest_name", newuser.guest_name);
+
+  formData.append("profilePic", photo);
+
+  formData.append("email", student.email);
+  formData.append("mobile", student.mobile);
+  formData.append("gender", newuser.gender);
+  formData.append("dob", newuser.dob);
+  formData.append("address", newuser.address);
+
+  await fetch("http://localhost:3000/upload-student-photo", {
+    method: "POST",
+    body: formData
+  });
+
+  alert("Booking + Photo saved");
+};
+
+
     if (isAdminLoggedIn) {
         return <Dashboard />;
     }
+
+
 
     return (
     <>
@@ -950,12 +976,14 @@ export default function Homepage(){
                   Name<span className='text-danger'>*</span><input type="text" className="form-control mb-2" name='guest_name' value={newuser.guest_name} placeholder="Name" onChange={handleUserChange}/>
                   Email<span className='text-danger'>*</span><input type="email" className="form-control mb-2" name='email' value={student.email} placeholder="Email" onChange={handleStudentChange}/>
                   Mobile<span className='text-danger'>*</span><input type="text" className="form-control mb-2" name='mobile' value={student.mobile} placeholder="Mobile No" onChange={handleStudentChange}/>
-                  Desgnation<span className='text-danger'>*</span><input type="text" className="form-control mb-4" name='designation' value={student.designation} placeholder="Designation" onChange={handleStudentChange}/>
+                  {/* Desgnation<span className='text-danger'>*</span><input type="text" className="form-control mb-4" name='designation' value={student.designation} placeholder="Designation" onChange={handleStudentChange}/> */}
                 </div>
 
                 <div className="col-md-6">
-                  {/*Need to work on it*/}
-                  Upload your photo<input type='file' name='profilePic' accept='image/*'/><br/><br/> 
+                  {/*Need to add handleupload and save*/}
+                  Upload your photo<input type="file" name="profilePic" accept="image/*" onChange={(e) => setPhoto(e.target.files[0])}/>
+                  <hr/>
+                  {/* <br></br> */}
                   Gender<span className='text-danger'>*</span><br/>
                       Male <input type="radio" className="mt-2 mb-3 me-3" name='gender' value={newuser.gender} onChange={handleUserChange}/>
                       Female <input type="radio" className="mb-2 me-3" name='gender' value={newuser.gender} onChange={handleUserChange}/>
@@ -980,7 +1008,7 @@ export default function Homepage(){
                   Designation<span className='text-danger'>*</span><input type="text" className="form-control mb-2" name='designation' value={student.designation} placeholder="Designation" onChange={handleStudentChange}/>
                   Company name<span className='text-danger'>*</span><input type="text" className="form-control mb-2" name='org_name' value={newuser.org_name} placeholder="Company name" onChange={handleUserChange}/>
                   <br></br>
-                  Expected Move-in Date<span className='text-danger'>*</span><input type="date" className="form-control mb-2" name='temp_check_in' value={newuser.temp_check_in} min={selectedRoom.check_out_date} max={selectedRoom.check_out_date+15} onChange={handleUserChange}/>
+                  {/* Expected Move-in Date<span className='text-danger'>*</span><input type="date" className="form-control mb-2" name='temp_check_in' value={newuser.temp_check_in} min={selectedRoom.check_out_date} max={selectedRoom.check_out_date+15} onChange={handleUserChange}/> */}
                 </div>
               </div>
               

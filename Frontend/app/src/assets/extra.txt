@@ -11,3 +11,5 @@ npm i --save @fortawesome/free-brands-svg-icons
 npm install recharts //For charts,graps etc
 
 npm install jspdf   //for pdf download
+
+npm install express multer   //for photo upload

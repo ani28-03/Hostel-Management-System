@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const sql = require('mysql2');
+const multer = require("multer");
+const path = require("path");
 
 const app= express();
 const port= 3000;
@@ -20,6 +22,35 @@ const db = sql.createConnection({
 db.connect((err)=>{
     err?console.log(err.message):console.log(`Connected to database!!!`);
 });
+
+//Upload photo
+const sanitize = (name) =>
+  name.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase();
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "public/Students");
+  },
+  filename: (req, file, cb) => {
+    const guestName = req.body.guest_name
+      ? sanitize(req.body.guest_name)
+      : "student";
+
+    const ext = path.extname(file.originalname);
+
+    cb(null, `${guestName}${ext}`);
+  }
+});
+
+const upload = multer({ storage });
+
+app.post("/upload-student-photo", upload.single("profilePic"), (req, res) => {
+  console.log("Saved file:", req.file.filename);
+  res.send("Student photo saved");
+});
+
+
+
 
 const getAll = "select booking_info.*,rooms.rent,rooms.deposit from booking_info join rooms on booking_info.room_no = rooms.room_no";
 const getRooms = "select rooms.*,booking_info.guest_name, booking_info.check_out_date from rooms left join booking_info on booking_info.room_no=rooms.room_no";
