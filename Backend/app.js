@@ -65,7 +65,7 @@ const changePaid = "update payments set isPaid=1,paid_date=? where payment_id=?"
 const add = "insert into booking_info(booking_id,guest_name, room_no, check_in_date, check_out_date,email,mobile,designation) values(?,?,?,?,?,?,?,?)";
 const addRoom = "insert into rooms(room_no, floor, type, rent, deposit, ac, wifi, tv, parking, meals) values(?,?,?,?,?,?,?,?,?,?)";
 const addNewStudent = "insert into booking_info(guest_name,email,mobile,designation) values(?,?,?,?);";
-const addUserInfo = "insert into user_info(guest_name, username, password, gender, dob, aadhar, address, city, state, pincode, org_name, org_id, temp_check_in, isAdmin) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+const addUserInfo = "insert into user_info(gender, dob, aadhar, address, city, state, pincode, org_name, org_id) values(?,?,?,?,?,?,?,?,?)"
 const addNewUsername = "insert into user_info(guest_name,username,password,isAdmin) values (?,?,?,?)";
 const addPayment = "insert into payments(payment_id, room_no, type, amount, due_date, isPaid) values(?,?,?,?,?,?)";
 const addComplaints = "insert into complaints(comp_id, guest_name, room_no, comp_type, complaint, comp_date, is_resolved) values(?,?,?,?,?,?,?)";
@@ -74,6 +74,9 @@ const delID = "delete from booking_info where booking_id=?";
 const delRoom = "delete from rooms where room_no=?";
 const delPayment = "delete from payments where payment_id=?";
 const delComplaints = "delete from complaints where comp_id=?";
+
+const addComplaint = "insert into complaints(guest_name, room_no, comp_type, complaint, comp_date, is_resolved) values (?, ?, ?, ?, ?, ?)";
+
 
 
 app.get("/tenants",(req,res)=>{
@@ -88,6 +91,17 @@ app.get("/tenants",(req,res)=>{
 
 app.get("/rooms",(req,res)=>{
     db.query(getRooms,(err,results)=>{
+        if(err){
+            return res.status(500).json({error:err.message});
+        }
+
+        return res.json(results);
+    })
+})
+
+app.get("/users/:guest_name",(req,res)=>{
+    const { guest_name } = req.params;
+    db.query(getUserInfo,[guest_name],(err,results)=>{
         if(err){
             return res.status(500).json({error:err.message});
         }
@@ -193,6 +207,18 @@ app.post("/student", (req, res) => {
     });
 });
 
+app.post("/users", (req, res) => {
+    const { gender, dob, aadhar, address, city, state, pincode, org_name, org_id } = req.body;
+
+    db.query(addUserInfo, [gender, dob, aadhar, address, city, state, pincode, org_name, org_id], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+
+        return res.json({ gender, dob, aadhar, address, city, state, pincode, org_name, org_id });
+    });
+});
+
 app.post("/newuser", (req, res) => {
     const { guest_name,username,password, isAdmin } = req.body;
 
@@ -262,6 +288,20 @@ app.delete("/payments/:payment_id",(req,res)=>{
         return res.status(200).json({message:"Successfully Deleted"});
     })
 })
+//Report an issue
+app.post("/complaints", (req, res) => {
+  const { guest_name, room_no, comp_type, complaint, comp_date, is_resolved } = req.body;
+
+  db.query(
+    addComplaint,
+    [guest_name, room_no, comp_type, complaint, comp_date, is_resolved],
+    (err, result) => {
+      if (err) return res.status(500).json(err);
+      res.status(201).json({ message: "Complaint added" });
+    }
+  );
+})
+
 
 app.delete("/complaints/:comp_id", (req,res) => {
     const {comp_id} = req.params;
