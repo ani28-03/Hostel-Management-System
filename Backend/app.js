@@ -14,7 +14,7 @@ app.use(cors());
 const db = sql.createConnection({
     host:"localhost",
     user:"root",
-    password:"qwerty",
+    password:"Gargi@2412",
     database:"project",
     dateStrings:true
 });
@@ -67,7 +67,8 @@ const addRoom = "insert into rooms(room_no, floor, type, rent, deposit, ac, wifi
 const addNewStudent = "insert into booking_info(guest_name,email,mobile,designation) values(?,?,?,?);";
 const addUserInfo = "UPDATE user_info SET gender = ?, dob = ?,aadhar = ?, address = ?, city = ?, state = ?, pincode = ?, org_name = ?, org_id = ? WHERE guest_name = ?";
 const addNewUsername = "insert into user_info(guest_name,username,password,isAdmin) values (?,?,?,?)";
-const addPayment = "insert into payments(payment_id, room_no, type, amount, due_date, isPaid) values(?,?,?,?,?,?)";
+const addPayment = "INSERT INTO payments(room_no, type, amount, due_date, paid_date, isPaid, transaction_id, bank_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
 const addComplaints = "insert into complaints(comp_id, guest_name, room_no, comp_type, complaint, comp_date, is_resolved) values(?,?,?,?,?,?,?)";
 
 const delID = "delete from booking_info where booking_id=?";
@@ -238,16 +239,50 @@ app.post("/newuser", (req, res) => {
 });
 
 app.post("/payments", (req, res) => {
-    const { payment_id, room_no, type, amount, due_date, isPaid } = req.body;
+  const {
+    room_no,
+    type,
+    amount,
+    due_date,
+    isPaid,
+    transaction_id,
+    bank_name
+  } = req.body;
 
-    db.query(addPayment, [payment_id, room_no, type, amount, due_date, isPaid], (err, results) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
+  const paid_date = isPaid ? new Date() : null;
 
-        return res.json({ payment_id, room_no, type, amount, due_date, isPaid });
-    });
+  db.query(
+    addPayment,
+    [
+      room_no,
+      type,
+      amount,
+      due_date,
+      paid_date,
+      isPaid,
+      transaction_id,
+      bank_name
+    ],
+    (err, results) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+
+      return res.json({
+        payment_id: results.insertId,
+        room_no,
+        type,
+        amount,
+        due_date,
+        paid_date,
+        isPaid,
+        transaction_id,
+        bank_name
+      });
+    }
+  );
 });
+
 
 app.post("/complaints" ,(req, res) => {
     const {comp_id, guest_name, room_no, comp_type, complaint, comp_date, is_resolved} = req.body;

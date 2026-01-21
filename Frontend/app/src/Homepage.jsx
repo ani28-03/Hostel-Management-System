@@ -21,6 +21,9 @@ export default function Homepage(){
     const [rooms,setRooms] = useState([]);
     const [selectedRoom, setSelectedRoom] = useState(null); //for booking a room by student
     const [photo, setPhoto] = useState(null);
+    const [transactionId, setTransactionId] = useState("");
+    const [bankName, setBankName] = useState("");
+
 
     const [student,setStudent] = useState({
       guest_name:"",
@@ -262,45 +265,45 @@ export default function Homepage(){
 
     
 
-  const handleBooking = async () => {
-  const {
-    guest_name,
-    gender,
-    dob,
-    aadhar,
-    address,
-    city,
-    state,
-    pincode,
-    org_name,
-    org_id
-  } = newuser;
+//   const handleBooking = async () => {
+//   const {
+//     guest_name,
+//     gender,
+//     dob,
+//     aadhar,
+//     address,
+//     city,
+//     state,
+//     pincode,
+//     org_name,
+//     org_id
+//   } = newuser;
 
-  const { email, mobile, designation } = student;
+//   const { email, mobile, designation } = student;
 
-  if (
-    !email || !mobile || !gender || !dob || !aadhar || !address || !city || !state || !pincode || !org_name || !org_id || !designation) {
-    alert("Please fill all mandatory fields");
-    return;
-  }
-  console.log(typeof aadhar);
+//   if (
+//     !email || !mobile || !gender || !dob || !aadhar || !address || !city || !state || !pincode || !org_name || !org_id || !designation) {
+//     alert("Please fill all mandatory fields");
+//     return;
+//   }
+//   console.log(typeof aadhar);
   
-  try {
-    await DashboardServices.addStudent(student);
+//   try {
+//     await DashboardServices.addStudent(student);
 
-    await DashboardServices.addUserInfo(newuser);
+//     await DashboardServices.addUserInfo(newuser);
 
-    alert("Details saved successfully!");
+//     alert("Details saved successfully!");
 
-    const modal = bootstrap.Modal.getInstance(
-      document.getElementById("userInfoModal")
-    );
-    modal.hide();
-  } catch (err) {
-    console.error(err);
-    alert("Failed to save booking details");
-  }
-};
+//     const modal = bootstrap.Modal.getInstance(
+//       document.getElementById("userInfoModal")
+//     );
+//     modal.hide();
+//   } catch (err) {
+//     console.error(err);
+//     alert("Failed to save booking details");
+//   }
+// };
 
 
       // 3. Upload photo (optional)
@@ -321,6 +324,106 @@ export default function Homepage(){
   //       document.getElementById("userInfoModal")
   //     );
   //     modal.hide();
+
+  //confirm booking after proceed
+ const openConfirmModal = () => {
+  const { email, mobile, designation } = student;
+
+  const {
+    gender,
+    dob,
+    aadhar,
+    address,
+    city,
+    state,
+    pincode,
+    org_name,
+    org_id,
+  } = newuser;
+
+  if (
+    !email ||
+    !mobile ||
+    !gender ||
+    !dob ||
+    !aadhar ||
+    !address ||
+    !city ||
+    !state ||
+    !pincode ||
+    !org_name ||
+    !org_id ||
+    !designation
+  ) {
+    alert("Please fill all mandatory fields");
+    return;
+  }
+
+  const currentModal = bootstrap.Modal.getInstance(
+    document.getElementById("userInfoModal")
+  );
+  currentModal.hide();
+
+  const confirmModal = new bootstrap.Modal(
+    document.getElementById("confirmBookingModal")
+  );
+  confirmModal.show();
+};
+
+
+const openPaymentModal = () => {
+  const confirmModal = bootstrap.Modal.getInstance(
+
+    document.getElementById("confirmBookingModal")
+  );
+  confirmModal.hide();
+
+  const paymentModal = new bootstrap.Modal(
+    document.getElementById("paymentModal")
+  );
+  paymentModal.show();
+};
+
+
+
+
+const handleBooking = async () => {
+  if (!transactionId || !bankName) {
+    alert("Please enter transaction details");
+    return;
+  }
+
+  try {
+    
+    await DashboardServices.addPayment({
+      room_no: selectedRoomNo,     // pass from UI
+      type: "rent",
+      amount: rentAmount,
+      due_date: dueDate,
+      paid_date: new Date(),
+      isPaid: true,
+      transaction_id: transactionId,
+      bank_name: bankName
+    });
+
+    await DashboardServices.addStudent(student);
+    await DashboardServices.addUserInfo(newuser);
+
+    alert("Payment successful & booking confirmed!");
+
+    
+    const paymentModal = bootstrap.Modal.getInstance(
+      document.getElementById("paymentModal")
+    );
+    paymentModal.hide();
+
+  } catch (err) {
+    console.error(err);
+    alert("Payment failed");
+  }
+};
+
+
 
 
     if (isAdminLoggedIn) {
@@ -1143,7 +1246,8 @@ export default function Homepage(){
             <div className="modal-footer">
               
               <button className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-              <button className="btn btn-primary" onClick={handleBooking}>Proceed</button>
+              <button className="btn btn-primary" onClick={openConfirmModal}> Proceed </button>
+
             </div>
 
           </div>
@@ -1230,6 +1334,119 @@ export default function Homepage(){
        </div>
      </div>
     </div>
+
+    {/* after proceed we go to confirm booking*/}
+    {/* Confirm Booking Modal */}
+<div className="modal fade" id="confirmBookingModal" tabIndex="-1">
+  <div className="modal-dialog modal-lg modal-dialog-centered">
+    <div className="modal-content">
+
+      <div className="modal-header">
+        <h5 className="modal-title">Confirm Booking Details</h5>
+        <button className="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div className="modal-body">
+        <p><b>Email:</b> {student.email}</p>
+        <p><b>Mobile:</b> {student.mobile}</p>
+        <p><b>Gender:</b> {newuser.gender}</p>
+        <p><b>DOB:</b> {newuser.dob}</p>
+        <p><b>Address:</b> {newuser.address}</p>
+        <p><b>Organization:</b> {newuser.org_name}</p>
+        <p><b>Designation:</b> {student.designation}</p>
+      </div>
+
+      <div className="modal-footer">
+        <button className="btn btn-secondary" data-bs-dismiss="modal">
+          Edit
+        </button>
+
+        <button className="btn btn-primary" onClick={openPaymentModal}>
+          Confirm & Continue
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+    {/* Payment Modal */}
+<div
+  className="modal fade"
+  id="paymentModal"
+  tabIndex="-1"
+  aria-hidden="true"
+>
+  <div className="modal-dialog modal-lg modal-dialog-centered">
+    <div className="modal-content">
+
+      {/* Header */}
+      <div className="modal-header">
+        <h5 className="modal-title">Payment Details</h5>
+        <button
+          type="button"
+          className="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+
+      {/* Body */}
+      <div className="modal-body">
+
+        <h6 className="fw-bold mb-2">Bank Account Details</h6>
+        <table className="table table-bordered">
+          <tbody>
+            <tr>
+              <th>Bank Name</th>
+              <td>State Bank of India</td>
+            </tr>
+            <tr>
+              <th>Account Number</th>
+              <td>123456789012</td>
+            </tr>
+            <tr>
+              <th>IFSC Code</th>
+              <td>SBIN0001234</td>
+            </tr>
+            <tr>
+              <th>Branch</th>
+              <td>Kurla West</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div className="mb-3">
+        <label className="form-label fw-bold">Transaction ID</label>
+       <input type="text" className="form-control" value={transactionId} onChange={(e) => setTransactionId(e.target.value)}
+      placeholder="Enter transaction ID" /></div>
+
+        <div className="mb-3">
+        <label className="form-label fw-bold">Bank Name</label>
+       <input
+       type="text"
+       className="form-control"
+       value={bankName}
+       onChange={(e) => setBankName(e.target.value)}
+       placeholder="Enter bank name"
+       />
+      </div>
+
+      </div>
+
+      {/* Footer */}
+      <div className="modal-footer">
+        <button
+          className="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Cancel
+        </button>
+        <button className="btn btn-success" onClick={handleBooking}> Confirm Payment</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
     </>
     )
