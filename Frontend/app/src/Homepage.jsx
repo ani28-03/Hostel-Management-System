@@ -1440,7 +1440,6 @@ const printReceipt = () => {
         <p><b>Transaction ID:</b> {transactionId}</p>
         <p><b>Bank Name:</b> {bankName}</p>
         <p><b>Amount:</b> ₹{localStorage.getItem("room_deposit")}</p>
-        <p><b>Due Date:</b> {localStorage.getItem("due_date")}</p>
         <p><b>Status:</b> Paid</p>
       </div>
 
