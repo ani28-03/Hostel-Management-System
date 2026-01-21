@@ -87,6 +87,7 @@ export default function Homepage(){
   };
 
   const submitComplaint = async () => {
+
   try {
     if (
       !complaint.guest_name ||
@@ -117,6 +118,7 @@ export default function Homepage(){
   } catch (err) {
     console.error(err);
     alert("Failed to submit complaint");
+    console.log(err);
   }
 };
 
@@ -242,7 +244,7 @@ export default function Homepage(){
       alert(`Welcome ${newuser.guest_name}!! Login in again to Sign-In!!`);
   };
 
-  //prefilled guest_name
+  //prefilled guest_name for Booking Model
   const handleOpenBooking = (room) => {
     setSelectedRoom(room);
 
@@ -253,6 +255,15 @@ export default function Homepage(){
       guest_name: storedName
     }));
   };
+  //prefilled guest_name for Complaint Model
+  const handleOpenComplaintModal = () => {
+  const storedName = localStorage.getItem("student_name") || "";
+
+  setComplaint(prev => ({
+    ...prev,
+    guest_name: storedName
+  }));
+};
 
     
 
@@ -268,7 +279,7 @@ export default function Homepage(){
       return;
     }
 
-    try {
+    // try {
       await DashboardServices.addStudent({
         guest_name: newuser.guest_name,
         email: student.email,
@@ -309,10 +320,10 @@ export default function Homepage(){
       );
       modal.hide();
 
-    } catch (err) {
-      console.error(err);
-      alert("Failed to save booking details");
-    }
+    // } catch (err) {
+    //   console.error(err);
+    //   alert("Failed to save booking details");
+    // }
   };
 
     if (isAdminLoggedIn) {
@@ -370,7 +381,8 @@ export default function Homepage(){
                 <ul className="dropdown-menu dropdown-menu-end animated-dropdown">
                   <li className="dropdown-animate"><a className="dropdown-item" onClick={()=>setActiveTab("profile")}>Profile</a></li>
                   <li className="dropdown-animate"><a className="dropdown-item" href="#rooms-header">MyRoom</a></li>
-                  <li className="dropdown-animate"><a className="dropdown-item" href="#"data-bs-toggle="modal" data-bs-target="#complaintModal">Report an Issue </a></li>
+                  {/*<li className="dropdown-animate"><a className="dropdown-item" href="#">Report an Issue</a></li>*/}
+                  <li className="dropdown-animate"><a className="dropdown-item" href="#"data-bs-toggle="modal" data-bs-target="#complaintModal" onClick={handleOpenComplaintModal}>Report an Issue </a></li>
 
                   <li className="dropdown-animate"><a className="dropdown-item" href="#">Student Life</a></li>
                   <li className="dropdown-animate"><a className="dropdown-item" href="#footer_col4">Contact us</a></li>
@@ -1156,12 +1168,12 @@ export default function Homepage(){
 
         <div className="row">
           <div className="col-md-6">
-            Student Name<span className="text-danger">*</span>
+            Guest Name<span className="text-danger">*</span>
             <input
               type="text"
               className="form-control mb-2"
               name="guest_name"
-              value={complaint.guest_name}
+              value={complaint.guest_name} disabled
               onChange={handleComplaintChange}
             />
 

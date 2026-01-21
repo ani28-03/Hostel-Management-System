@@ -14,7 +14,7 @@ app.use(cors());
 const db = sql.createConnection({
     host:"localhost",
     user:"root",
-    password:"Gargi@2412",
+    password:"qwerty",
     database:"project",
     dateStrings:true
 });
