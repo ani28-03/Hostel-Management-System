@@ -14,7 +14,7 @@ app.use(cors());
 const db = sql.createConnection({
     host:"localhost",
     user:"root",
-    password:"qwerty",
+    password:"Coffee@123@#",
     database:"project",
     dateStrings:true
 });
@@ -57,6 +57,7 @@ const getRooms = "select rooms.*,booking_info.guest_name, booking_info.check_out
 const getUserInfo = "select * from user_info where guest_name=?";
 const getPassword = "select guest_name, username, password, isAdmin from user_info where username=?";
 const getPayments = "select payments.*, tenant.rent, tenant.deposit, tenant.guest_name FROM payments left join (select rooms.room_no,rooms.rent,rooms.deposit,booking_info.guest_name from rooms left join booking_info on booking_info.room_no=rooms.room_no) as tenant on payments.room_no=tenant.room_no";
+const getComplaints = "select * from complaints";
 
 const changePassword = "update user_info set password=? where username=?";
 const changePaid = "update payments set isPaid=1,paid_date=? where payment_id=?";
@@ -67,10 +68,12 @@ const addNewStudent = "insert into booking_info(guest_name,email,mobile,designat
 const addUserInfo = "insert into user_info(gender, dob, aadhar, address, city, state, pincode, org_name, org_id) values(?,?,?,?,?,?,?,?,?)"
 const addNewUsername = "insert into user_info(guest_name,username,password,isAdmin) values (?,?,?,?)";
 const addPayment = "insert into payments(payment_id, room_no, type, amount, due_date, isPaid) values(?,?,?,?,?,?)";
+const addComplaints = "insert into complaints(comp_id, guest_name, room_no, comp_type, complaint, comp_date, is_resolved) values(?,?,?,?,?,?,?)";
 
 const delID = "delete from booking_info where booking_id=?";
 const delRoom = "delete from rooms where room_no=?";
 const delPayment = "delete from payments where payment_id=?";
+const delComplaints = "delete from complaints where comp_id=?";
 
 const addComplaint = "insert into complaints(guest_name, room_no, comp_type, complaint, comp_date, is_resolved) values (?, ?, ?, ?, ?, ?)";
 
@@ -126,6 +129,19 @@ app.get("/payments", (req, res) => {
             return res.status(500).json({ error: err.message });
         }
 
+        return res.json(results);
+    });
+});
+
+
+// Complaints
+
+app.get("/complaints",(req, res) => {
+    db.query(getComplaints, (err, results) => {
+        if(err) {
+            return res.status(500).json({ errror: err.message});
+        }
+        
         return res.json(results);
     });
 });
@@ -227,6 +243,19 @@ app.post("/payments", (req, res) => {
     });
 });
 
+app.post("/complaints" ,(req, res) => {
+    const {comp_id, guest_name, room_no, comp_type, complaint, comp_date, is_resolved} = req.body;
+
+    db.query(addComplaints,[comp_id, guest_name, room_no, comp_type, complaint, comp_date, is_resolved], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+
+        return res.json({ comp_id, guest_name, room_no, comp_type, complaint, comp_date, is_resolved });
+
+    });
+});
+
 app.delete("/tenants/:booking_id",(req,res)=>{
     const {booking_id} = req.params;
     db.query(delID,[booking_id],(err,results)=>{
@@ -273,6 +302,17 @@ app.post("/complaints", (req, res) => {
   );
 })
 
+
+app.delete("/complaints/:comp_id", (req,res) => {
+    const {comp_id} = req.params;
+    db.query(delComplaints, [comp_id],(err, results) =>{
+        if(err){
+            return res.status(500).json({error:err.message});
+        }
+        console.log("Deleted!!")
+        return res.status(200).json({message:"Successfully Deleted"});
+    })
+})
 
 app.listen((port),()=>{
     console.log(`Listening on ${port}!!!`)

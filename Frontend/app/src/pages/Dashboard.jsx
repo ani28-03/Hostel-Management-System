@@ -4,6 +4,7 @@ import Rooms from './Rooms/Rooms';
 import Tenants from './Tenants/Tenants';
 import Payments from './Payments/Payments';
 import Settings from './Settings/Settings';
+import Complaint from './Complaint/Complaint';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
@@ -75,7 +76,7 @@ export default function Dashboard(){
                     {activeTab === "tab3" && <div className="tabContent"> <div><Tenants/></div> </div>}
                     {activeTab === "tab4" && <div className="tabContent"> <div><Payments/></div> </div>}
                     {activeTab === "tab5" && <div className="tabContent"> <h1>Maintenance</h1> </div>}
-                    {activeTab === "tab6" && <div className="tabContent"> <h1>Complaints</h1> </div>}
+                    {activeTab === "tab6" && <div className="tabContent"> <div><Complaint/></div> </div>}
                     {activeTab === "tab7" && <div className="tabContent"> <div><Settings/></div> </div>}
                 </div>
             </div>
