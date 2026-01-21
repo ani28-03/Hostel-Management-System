@@ -242,36 +242,44 @@ export default function Homepage(){
     
 
   const handleBooking = async () => {
-    if (!selectedRoom) {
-      alert("Please select a room first");
-      return;
-    }
+    const {
+      guest_name,
+      gender,
+      dob,
+      aadhar,
+      address,
+      city,
+      state,
+      pincode,
+      org_name,
+      org_id
+    } = newuser;
+
+    const { email, mobile, designation } = student;
 
     if (
-      !newuser.guest_name || !student.email || !student.mobile || !newuser.gender || !newuser.dob || !newuser.aadhar || !newuser.address ) {
+      !email || !mobile || !gender || !dob || !aadhar || !address || !city || !state || !pincode || !org_name || !org_id || !designation) {
       alert("Please fill all mandatory fields");
       return;
     }
+    console.log(typeof aadhar);
+    
+    try {
+      await DashboardServices.addStudent(student);
 
-    // try {
-      await DashboardServices.addStudent({
-        guest_name: newuser.guest_name,
-        email: student.email,
-        mobile: student.mobile,
-        designation: student.designation
-      });
+      await DashboardServices.addUserInfo(newuser);
 
-      await DashboardServices.addUserInfo({
-        gender: newuser.gender,
-        dob: newuser.dob,
-        aadhar: newuser.aadhar,
-        address: newuser.address,
-        city: newuser.city,
-        state: newuser.state,
-        pincode: newuser.pincode,
-        org_name: newuser.org_name,
-        org_id: newuser.org_id
-      });
+      alert("Details saved successfully!");
+
+      const modal = bootstrap.Modal.getInstance(
+        document.getElementById("userInfoModal")
+      );
+      modal.hide();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save booking details");
+    }
+  };
 
       // 3. Upload photo (optional)
       // if (photo) {
@@ -286,19 +294,7 @@ export default function Homepage(){
       //   );
       // }
 
-      alert("Details saved successfully!");
 
-      // close modal
-      const modal = bootstrap.Modal.getInstance(
-        document.getElementById("userInfoModal")
-      );
-      modal.hide();
-
-    // } catch (err) {
-    //   console.error(err);
-    //   alert("Failed to save booking details");
-    // }
-  };
 
     if (isAdminLoggedIn) {
         return <Dashboard />;
