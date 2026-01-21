@@ -76,12 +76,21 @@ export default function Homepage(){
 
     // Sign-Up handles
 
-    const handleStudentChange=async(event)=>{
-        setStudent({...student, [event.target.name]:event.target.value});
+    const handleStudentChange = (e) => {
+      const { name, value } = e.target;
+      setStudent(prev => ({
+        ...prev,
+        [name]: value
+      }));
     };
 
-    const handleUserChange=async(event)=>{
-        setNewuser({...newuser, [event.target.name]:event.target.value});
+    const handleUserChange = (e) => {
+      const { name, value, type } = e.target;
+
+      setNewuser(prev => ({
+        ...prev,
+        [name]: type === "radio" ? value : value
+      }));
     };
 
 
@@ -135,86 +144,129 @@ export default function Homepage(){
 
     //For aadhar input format
     const handleAadharChange = (e) => {
-    let value = e.target.value;
+      let value = e.target.value;
 
-    value = value.replace(/\D/g, '');
+      value = value.replace(/\D/g, '');
 
-    if (value.length > 4 && value.length <= 8) {
-      value = value.replace(/(\d{4})(\d+)/, '$1-$2');
-    } else if (value.length > 8) {
-      value = value.replace(/(\d{4})(\d{4})(\d+)/, '$1-$2-$3');
-    }
+      if (value.length > 4 && value.length <= 8) {
+        value = value.replace(/(\d{4})(\d+)/, '$1-$2');
+      } else if (value.length > 8) {
+        value = value.replace(/(\d{4})(\d{4})(\d+)/, '$1-$2-$3');
+      }
 
-    setNewuser({
-      ...newuser,
-      aadhar: value
-    });
-  };
-
-    //For signUp
-    const handleRegister=async()=>{
-        const {guest_name,newUsername,newPassword,isAdmin} =newuser;
-        if(!guest_name||!newUsername||!newPassword){
-            alert("Enter All Fields!!");
-            return;
-        }
-        if(newuser.newPassword!=confirmPassword){
-          alert("Password not matching!!");
-          return;
-        }
-        // converting variable names as required for the api addNewUsername 
-        const newuser_details = {
-            guest_name,
-            username: newUsername,
-            password: newPassword,
-            isAdmin
-        };
-
-        console.log(newuser_details);
-
-        await DashboardServices.addNewUsername(newuser_details);
-
-        setNewuser({
-          guest_name:"",
-          newUsername:"",
-          newPassword:"",
-          isAdmin:0
-        })
-
-        setconfirmPassword("");
-
-        alert(`Welcome ${newuser.guest_name}!! Login in again to Sign-In!!`);
+      setNewuser({
+        ...newuser,
+        aadhar: value
+      });
     };
 
+    //For signUp
+  const handleRegister=async()=>{
+      const {guest_name,newUsername,newPassword,isAdmin} =newuser;
+      if(!guest_name||!newUsername||!newPassword){
+          alert("Enter All Fields!!");
+          return;
+      }
+      if(newuser.newPassword!=confirmPassword){
+        alert("Password not matching!!");
+        return;
+      }
+      // converting variable names as required for the api addNewUsername 
+      const newuser_details = {
+          guest_name,
+          username: newUsername,
+          password: newPassword,
+          isAdmin
+      };
+
+      console.log(newuser_details);
+
+      await DashboardServices.addNewUsername(newuser_details);
+      
+      setNewuser({
+        guest_name:"",
+        newUsername:"",
+        newPassword:"",
+        isAdmin:0
+      })
+
+      setconfirmPassword("");
+
+      alert(`Welcome ${newuser.guest_name}!! Login in again to Sign-In!!`);
+  };
+
+  //prefilled guest_name
+  const handleOpenBooking = (room) => {
+    setSelectedRoom(room);
+
+    const storedName = localStorage.getItem("student_name") || "";
+
+    setNewuser(prev => ({
+      ...prev,
+      guest_name: storedName
+    }));
+  };
 
     
 
   const handleBooking = async () => {
-  if (!photo) {
-    alert("Please upload a photo");
-    return;
-  }
+    if (!selectedRoom) {
+      alert("Please select a room first");
+      return;
+    }
 
-  const formData = new FormData();
+    if (
+      !newuser.guest_name || !student.email || !student.mobile || !newuser.gender || !newuser.dob || !newuser.aadhar || !newuser.address ) {
+      alert("Please fill all mandatory fields");
+      return;
+    }
 
-  formData.append("guest_name", newuser.guest_name);
+    try {
+      await DashboardServices.addStudent({
+        guest_name: newuser.guest_name,
+        email: student.email,
+        mobile: student.mobile,
+        designation: student.designation
+      });
 
-  formData.append("profilePic", photo);
+      await DashboardServices.addUserInfo({
+        gender: newuser.gender,
+        dob: newuser.dob,
+        aadhar: newuser.aadhar,
+        address: newuser.address,
+        city: newuser.city,
+        state: newuser.state,
+        pincode: newuser.pincode,
+        org_name: newuser.org_name,
+        org_id: newuser.org_id
+      });
 
-  formData.append("email", student.email);
-  formData.append("mobile", student.mobile);
-  formData.append("gender", newuser.gender);
-  formData.append("dob", newuser.dob);
-  formData.append("address", newuser.address);
+      // 3. Upload photo (optional)
+      // if (photo) {
+      //   const formData = new FormData();
+      //   formData.append("profilePic", photo);
+      //   formData.append("guest_name", newuser.guest_name);
 
-  await fetch("http://localhost:3000/upload-student-photo", {
-    method: "POST",
-    body: formData
-  });
+      //   await axios.post(
+      //     "http://localhost:3000/upload-student-photo",
+      //     formData,
+      //     { headers: { "Content-Type": "multipart/form-data" } }
+      //   );
+      // }
 
-  alert("Booking + Photo saved");
-};
+      alert("Details saved successfully!");
 
+      // close modal
+      const modal = bootstrap.Modal.getInstance(
+        document.getElementById("userInfoModal")
+      );
+      modal.hide();
+
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save booking details");
+    }
+  };
 
     if (isAdminLoggedIn) {
         return <Dashboard />;
@@ -621,7 +673,11 @@ export default function Homepage(){
                           {isStudentLoggedIn?(
                             <div className="row">
                             <div className="col-md-9"></div>
-                            <button className='col-md-2 bg-warning text-black' data-bs-toggle="modal" data-bs-target="#userInfoModal" onClick={() => setSelectedRoom(room)}>
+                            <button
+                              className='col-md-2 bg-warning text-black'
+                              data-bs-toggle="modal"
+                              data-bs-target="#userInfoModal"
+                              onClick={() => handleOpenBooking(room)}>
                               Select Room
                             </button>
                           </div>
@@ -977,7 +1033,7 @@ export default function Homepage(){
                 <h6>Your Details</h6><hr/>
                 <div className="col-md-6">
                   
-                  Name<span className='text-danger'>*</span><input type="text" className="form-control mb-2" name='guest_name' value={newuser.guest_name} placeholder="Name" onChange={handleUserChange}/>
+                  Name<span className='text-danger'>*</span><input type="text" className="form-control mb-2" name='guest_name' value={newuser.guest_name} disabled onChange={handleUserChange}/>
                   Email<span className='text-danger'>*</span><input type="email" className="form-control mb-2" name='email' value={student.email} placeholder="Email" onChange={handleStudentChange}/>
                   Mobile<span className='text-danger'>*</span><input type="text" className="form-control mb-2" name='mobile' value={student.mobile} placeholder="Mobile No" onChange={handleStudentChange}/>
                   {/* Desgnation<span className='text-danger'>*</span><input type="text" className="form-control mb-4" name='designation' value={student.designation} placeholder="Designation" onChange={handleStudentChange}/> */}
@@ -989,9 +1045,15 @@ export default function Homepage(){
                   <hr/>
                   {/* <br></br> */}
                   Gender<span className='text-danger'>*</span><br/>
-                      Male <input type="radio" className="mt-2 mb-3 me-3" name='gender' value={newuser.gender} onChange={handleUserChange}/>
-                      Female <input type="radio" className="mb-2 me-3" name='gender' value={newuser.gender} onChange={handleUserChange}/>
-                      others <input type="radio" className="mb-2" name='gender' value={newuser.gender} onChange={handleUserChange}/><br/>
+                       Male
+                    <input type="radio" name="gender" value="Male" checked={newuser.gender === "Male"} onChange={handleUserChange}/>
+
+                    Female
+                    <input type="radio" name="gender" value="Female" checked={newuser.gender === "Female"} onChange={handleUserChange}/>
+
+                    Others
+                    <input type="radio" name="gender" value="Others" checked={newuser.gender === "Others"} onChange={handleUserChange}/>
+
                   Date of Birth<span className='text-danger'>*</span><input type="date" className="form-control mb-2" name='dob' value={newuser.dob} onChange={handleUserChange}/>
                   Aadhar<span className='text-danger'>*</span><input type="text" className="form-control mb-2" name="aadhar" value={newuser.aadhar} placeholder="XXXX-XXXX-XXXX" maxLength={14} onChange={handleAadharChange}/>                
                 </div>
@@ -1008,7 +1070,7 @@ export default function Homepage(){
                 </div>
                 <div className="col-md-6">
                   <h6>Occupation</h6><hr/>
-                  Company Id<span className='text-danger'>*</span><input type="text" className="form-control mb-2" name='ord_id' value={newuser.org_id} placeholder="Company ID" onChange={handleUserChange}/>
+                  Company Id<span className='text-danger'>*</span><input type="text" className="form-control mb-2" name='org_id' value={newuser.org_id} placeholder="Company ID" onChange={handleUserChange}/>
                   Designation<span className='text-danger'>*</span><input type="text" className="form-control mb-2" name='designation' value={student.designation} placeholder="Designation" onChange={handleStudentChange}/>
                   Company name<span className='text-danger'>*</span><input type="text" className="form-control mb-2" name='org_name' value={newuser.org_name} placeholder="Company name" onChange={handleUserChange}/>
                   <br></br>
