@@ -318,7 +318,6 @@ export default function Homepage(){
                 <ul className="dropdown-menu dropdown-menu-end animated-dropdown">
                   <li className="dropdown-animate"><a className="dropdown-item" onClick={()=>setActiveTab("profile")}>Profile</a></li>
                   <li className="dropdown-animate"><a className="dropdown-item" href="#rooms-header">MyRoom</a></li>
-                  {/*<li className="dropdown-animate"><a className="dropdown-item" href="#">Report an Issue</a></li>*/}
                   <li className="dropdown-animate"><a className="dropdown-item" href="#"data-bs-toggle="modal" data-bs-target="#complaintModal">Report an Issue </a></li>
 
                   <li className="dropdown-animate"><a className="dropdown-item" href="#">Student Life</a></li>
@@ -1095,7 +1094,7 @@ export default function Homepage(){
 
         <div className="row">
           <div className="col-md-6">
-            Guest Name<span className="text-danger">*</span>
+            Student Name<span className="text-danger">*</span>
             <input
               type="text"
               className="form-control mb-2"
