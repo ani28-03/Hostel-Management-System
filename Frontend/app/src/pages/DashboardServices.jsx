@@ -21,7 +21,7 @@ export const DashboardServices = {
     addUserInfo: async (rec) => (await axios.post(base + "/users", rec)).data,
     addNewUsername: async (rec) => (await axios.post(base + "/newuser", rec)).data,
     addPayment: async (rec) => (await axios.post(base + "/payments", rec)).data,
-    addComplaints : async (rec) => (await axios.post(base + "/complaints", rec)).data,
+    addComplaint : async (rec) => (await axios.post(base + "/complaints", rec)).data,
 
     remove: async (booking_id) => (await axios.delete(`${base}/tenants/${booking_id}`)).data,
     removeRoom: async (room_no) => (await axios.delete(`${base}/rooms/${room_no}`)).data,
