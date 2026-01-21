@@ -63,6 +63,25 @@ INSERT INTO payments (room_no, type, amount, due_date, paid_date, isPaid) VALUES
 
 select * from payments;
 
+
+********************************** Tenant Complaints **********************************
+
+use project;
+create table complaints(comp_id int primary key auto_increment, guest_name varchar(50), room_no int, comp_type varchar(50), compaint varchar(50), comp_date date, is_resolved bool);
+
+
+select * from complaints;
+
+********************************** Maintenance **********************************
+
+
+use project;
+create table maintenance(main_id int primary key auto_increment, main_type varchar(50), amount int, main_date date, main_description varchar(50));
+
+
+select * from maintenance;
+
+
 ********************************** Join Queries **********************************
 
 select * from booking_info left join rooms on booking_info.room_no = rooms.room_no;

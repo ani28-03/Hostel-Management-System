@@ -4,6 +4,8 @@ import Rooms from './Rooms/Rooms';
 import Tenants from './Tenants/Tenants';
 import Payments from './Payments/Payments';
 import Settings from './Settings/Settings';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 
 export default function Dashboard(){
     
@@ -57,12 +59,12 @@ export default function Dashboard(){
                 <div className="sidebar">
 
                     <ul className="side-menu">
-                        <li onClick={() => setActiveTab("tab1")}>🏠 Dashboard</li>
-                        <li onClick={() => setActiveTab("tab2")}>🛏 Rooms</li>
+                        <li onClick={() => setActiveTab("tab1")}><FontAwesomeIcon icon={['far', 'house']} /> Dashboard</li>
+                        <li onClick={() => setActiveTab("tab2")}><FontAwesomeIcon icon={['fas', 'bed']} /> Rooms</li>
                         <li onClick={() => setActiveTab("tab3")}>👥 Tenants</li>
                         <li onClick={() => setActiveTab("tab4")}>💳 Payments</li>
                         <li onClick={() => setActiveTab("tab5")}>🔧 Maintenance</li>
-                        <li onClick={() => setActiveTab("tab6")}>📊 Reports</li>
+                        <li onClick={() => setActiveTab("tab6")}>📊 Complaints</li>
                         <li onClick={() => setActiveTab("tab7")}>⚙ Settings</li>
                     </ul>
                 </div>

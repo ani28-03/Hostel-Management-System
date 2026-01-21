@@ -85,22 +85,23 @@ export default function Homepage(){
         setNewuser({...newuser, [event.target.name]:event.target.value});
     };
 
+    //For aadhar input format
     const handleAadharChange = (e) => {
-  let value = e.target.value;
+    let value = e.target.value;
 
-  value = value.replace(/\D/g, '');
+    value = value.replace(/\D/g, '');
 
-  if (value.length > 4 && value.length <= 8) {
-    value = value.replace(/(\d{4})(\d+)/, '$1-$2');
-  } else if (value.length > 8) {
-    value = value.replace(/(\d{4})(\d{4})(\d+)/, '$1-$2-$3');
-  }
+    if (value.length > 4 && value.length <= 8) {
+      value = value.replace(/(\d{4})(\d+)/, '$1-$2');
+    } else if (value.length > 8) {
+      value = value.replace(/(\d{4})(\d{4})(\d+)/, '$1-$2-$3');
+    }
 
-  setNewuser({
-    ...newuser,
-    aadhar: value
-  });
-};
+    setNewuser({
+      ...newuser,
+      aadhar: value
+    });
+  };
 
 
     const handleRegister=async()=>{
