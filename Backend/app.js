@@ -58,9 +58,14 @@ const getUserInfo = "select * from user_info where guest_name=?";
 const getPassword = "select guest_name, username, password, isAdmin from user_info where username=?";
 const getPayments = "select payments.*, tenant.rent, tenant.deposit, tenant.guest_name FROM payments left join (select rooms.room_no,rooms.rent,rooms.deposit,booking_info.guest_name from rooms left join booking_info on booking_info.room_no=rooms.room_no) as tenant on payments.room_no=tenant.room_no";
 const getComplaints = "select * from complaints";
+const getMaintenance = "SELECT * FROM maintenance";
 
 const changePassword = "update user_info set password=? where username=?";
 const changePaid = "update payments set isPaid=1,paid_date=? where payment_id=?";
+const changeComplaint = "update complaints set is_resolved=1  where comp_id=?";
+
+const changeMaintain ="UPDATE maintenance SET status=? WHERE main_id=?";
+
 
 const add = "insert into booking_info(booking_id,guest_name, room_no, check_in_date, check_out_date,email,mobile,designation) values(?,?,?,?,?,?,?,?)";
 const addRoom = "insert into rooms(room_no, floor, type, rent, deposit, ac, wifi, tv, parking, meals) values(?,?,?,?,?,?,?,?,?,?)";
@@ -69,11 +74,15 @@ const addUserInfo = "insert into user_info(gender, dob, aadhar, address, city, s
 const addNewUsername = "insert into user_info(guest_name,username,password,isAdmin) values (?,?,?,?)";
 const addPayment = "insert into payments(payment_id, room_no, type, amount, due_date, isPaid) values(?,?,?,?,?,?)";
 const addComplaints = "insert into complaints(comp_id, guest_name, room_no, comp_type, complaint, comp_date, is_resolved) values(?,?,?,?,?,?,?)";
+const addMaintenance = "INSERT INTO maintenance(main_type, amount, main_date, main_description,status) VALUES (?,?,?,?,'pending')";
+
+
 
 const delID = "delete from booking_info where booking_id=?";
 const delRoom = "delete from rooms where room_no=?";
 const delPayment = "delete from payments where payment_id=?";
 const delComplaints = "delete from complaints where comp_id=?";
+const deleteMaintenance = "DELETE FROM maintenance WHERE main_id=?";
 
 const addComplaint = "insert into complaints(guest_name, room_no, comp_type, complaint, comp_date, is_resolved) values (?, ?, ?, ?, ?, ?)";
 
@@ -146,6 +155,18 @@ app.get("/complaints",(req, res) => {
     });
 });
 
+//maintainance
+
+app.get("/maintenance", (req, res) => {
+  db.query(getMaintenance, (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json(results);
+  });
+});
+
+
 app.put("/changePassword/:username",(req,res)=>{
     const { username }=req.params;
     const {password}=req.body;
@@ -170,6 +191,29 @@ app.put("/payments/:payment_id",(req,res)=>{
         }
     })
 })
+
+app.put("/complaints/:comp_id",(req,res)=>{
+    const {comp_id} = req.params;
+    db.query(changeComplaint,[comp_id],(err,results) =>{
+        if (err)
+            return res.status(500).json({error:err.message});
+        else{
+            
+            res.json({"message":"complaint marked as resolved!!"});
+        }
+    })
+})
+
+app.put("/maintenance/status/:id", (req, res) => {
+  const { status } = req.body;
+
+  db.query(changeMaintain,[status, req.params.id],(err) => {
+      if (err) return res.status(500).json(err);
+      res.json({ message: "Status updated" });
+    }
+  );
+});
+
 
 app.post("/tenants", (req, res) => {
     const { booking_id, guest_name, room_no, check_in_date, check_out_date,email,mobile,designation} = req.body;
@@ -256,6 +300,24 @@ app.post("/complaints" ,(req, res) => {
     });
 });
 
+// maintainance
+app.post("/maintenance", (req, res) => {
+  const { main_type, amount, main_date, main_description, status } = req.body;
+
+  db.query(
+    addMaintenance,
+    [main_type, amount, main_date, main_description,status],
+    (err, results) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      res.status(201).json({
+        message: "Maintenance record added successfully",
+      });
+    }
+  );
+});
+
 app.delete("/tenants/:booking_id",(req,res)=>{
     const {booking_id} = req.params;
     db.query(delID,[booking_id],(err,results)=>{
@@ -302,6 +364,17 @@ app.post("/complaints", (req, res) => {
   );
 })
 
+app.post("/maintenance", (req, res) => {
+  const { main_type, amount, main_date, main_description } = req.body;
+
+  db.query( addMaintenance,[main_type, amount, main_date, main_description, "pending"],(err) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.status(201).json({ message: "Maintenance added successfully" });
+    }
+  );
+});
+
+
 
 app.delete("/complaints/:comp_id", (req,res) => {
     const {comp_id} = req.params;
@@ -314,6 +387,17 @@ app.delete("/complaints/:comp_id", (req,res) => {
     })
 })
 
+// maintainance
+app.delete("/maintenance/:main_id", (req, res) => {
+  const { main_id } = req.params;
+
+  db.query(deleteMaintenance, [main_id], (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json({ message: "Maintenance record deleted" });
+  });
+});
 app.listen((port),()=>{
     console.log(`Listening on ${port}!!!`)
 })

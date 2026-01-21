@@ -10,10 +10,14 @@ export const DashboardServices = {
     getPayment: async () => (await axios.get(base + "/payments")).data,
     //complaints
     getComplaints: async () => (await axios.get(base + "/complaints")).data,
+    markResolved: async (comp_id) => (await axios.put(`${base}/complaints/${comp_id}`)).data,
+    getMaintenance: async () => (await axios.get(base + "/maintenance")).data,
+
 
 
     changePassword: async (username,newPassword) => (await axios.put(`${base}/changePassword/${username}`,{password:newPassword})).data,
     changePaid: async (payment_id,rec) => (await axios.put(`${base}/payments/${payment_id}`,rec)).data,
+    changeComplaint: async (comp_id,rec) => (await axios.put(`${base}/complaints/${comp_id}`,rec)).data,
 
     add: async (rec) => (await axios.post(base + "/tenants", rec)).data,
     addRoom: async (rec) => (await axios.post(base + "/rooms", rec)).data,
@@ -21,9 +25,11 @@ export const DashboardServices = {
     addUserInfo: async (rec) => (await axios.post(base + "/users", rec)).data,
     addNewUsername: async (rec) => (await axios.post(base + "/newuser", rec)).data,
     addPayment: async (rec) => (await axios.post(base + "/payments", rec)).data,
-    addComplaints : async (rec) => (await axios.post(base + "/complaints", rec)).data,
+    addComplaint: async (rec) => (await axios.post(base + "/complaints", rec)).data,
+    addMaintenance: async (rec) => (await axios.post(base + "/maintenance", rec)).data,
 
     remove: async (booking_id) => (await axios.delete(`${base}/tenants/${booking_id}`)).data,
     removeRoom: async (room_no) => (await axios.delete(`${base}/rooms/${room_no}`)).data,
     removePayment: async (payment_id) => (await axios.delete(`${base}/payments/${payment_id}`)).data,
+    removeMaintenance: async (main_id) => (await axios.delete(`${base}/maintenance/${main_id}`)).data,
 };
