@@ -245,6 +245,8 @@ export default function Homepage(){
   //prefilled guest_name for Booking Model
   const handleOpenBooking = (room) => {
     setSelectedRoom(room);
+    localStorage.setItem("student_room", room.room_no);
+    console.log(localStorage.getItem("student_room"));
 
     const storedName = localStorage.getItem("student_name") || "";
 
