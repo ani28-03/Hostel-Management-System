@@ -21,6 +21,9 @@ export default function Homepage(){
     const [rooms,setRooms] = useState([]);
     const [selectedRoom, setSelectedRoom] = useState(null); //for booking a room by student
     const [photo, setPhoto] = useState(null);
+    const [transactionId, setTransactionId] = useState("");
+    const [bankName, setBankName] = useState("");
+
 
     const [student,setStudent] = useState({
       guest_name:"",
@@ -52,6 +55,9 @@ export default function Homepage(){
     comp_type: "",
     complaint: ""
     })
+
+    const [receiptData, setReceiptData] = useState(null);
+
 
     useEffect(() => {
     const admin = localStorage.getItem("isAdminLoggedIn");
@@ -135,12 +141,7 @@ export default function Homepage(){
     };
 
     const handleUserChange = (e) => {
-      const { name, value, type } = e.target;
-
-      setNewuser(prev => ({
-        ...prev,
-        [name]: type === "radio" ? value : value
-      }));
+      setNewuser({ ...newuser, [e.target.name]: e.target.value });
     };
 
 
@@ -247,6 +248,11 @@ export default function Homepage(){
   //prefilled guest_name for Booking Model
   const handleOpenBooking = (room) => {
     setSelectedRoom(room);
+    localStorage.setItem("student_room", room.room_no);
+    console.log(localStorage.getItem("student_room"));
+    localStorage.setItem("room_deposit", room.deposit);
+    console.log(localStorage.getItem("room_deposit"));
+
 
     const storedName = localStorage.getItem("student_name") || "";
 
@@ -265,66 +271,139 @@ export default function Homepage(){
   }));
 };
 
+
+  //confirm booking after proceed
+ const openConfirmModal = () => {
+  const { email, mobile, designation } = student;
+
+  const {
+    gender,
+    dob,
+    aadhar,
+    address,
+    city,
+    state,
+    pincode,
+    org_name,
+    org_id,
+  } = newuser;
+
+  if (
+    !email ||
+    !mobile ||
+    !gender ||
+    !dob ||
+    !aadhar ||
+    !address ||
+    !city ||
+    !state ||
+    !pincode ||
+    !org_name ||
+    !org_id ||
+    !designation
+  ) {
+    alert("Please fill all mandatory fields");
+    return;
+  }
+
+  const currentModal = bootstrap.Modal.getInstance(
+    document.getElementById("userInfoModal")
+  );
+  currentModal.hide();
+
+  const confirmModal = new bootstrap.Modal(
+    document.getElementById("confirmBookingModal")
+  );
+  confirmModal.show();
+};
+
+
+const openPaymentModal = () => {
+  const confirmModal = bootstrap.Modal.getInstance(
+
+    document.getElementById("confirmBookingModal")
+  );
+  confirmModal.hide();
+
+  const paymentModal = new bootstrap.Modal(
+    document.getElementById("paymentModal")
+  );
+  paymentModal.show();
+};
+
+
+
+
+const handleBooking = async () => {
+  if (!transactionId || !bankName) {11
+    alert("Please enter transaction details");
+    return;
+  }
+
+  const dueDate = new Date();
+  dueDate.setDate(dueDate.getDate() + 3);
+  const formattedDueDate = dueDate.toISOString().split("T")[0];
+
+  localStorage.setItem("due_date",formattedDueDate);
+
+
+  try {
     
+    await DashboardServices.addPayment({
+      room_no: localStorage.getItem("student_room"),  
+      type: "deposit",
+      amount: localStorage.getItem("room_deposit"),
+      due_date: formattedDueDate,
+      isPaid: false,
+      transaction_id: transactionId,
+      bank_name: bankName
+    });
 
-  const handleBooking = async () => {
-    if (!selectedRoom) {
-      alert("Please select a room first");
-      return;
-    }
+    await DashboardServices.addStudent(student);
+    await DashboardServices.addUserInfo(newuser);
 
-    if (
-      !newuser.guest_name || !student.email || !student.mobile || !newuser.gender || !newuser.dob || !newuser.aadhar || !newuser.address ) {
-      alert("Please fill all mandatory fields");
-      return;
-    }
+    alert("Payment successful & booking confirmed!");
 
-    // try {
-      await DashboardServices.addStudent({
-        guest_name: newuser.guest_name,
-        email: student.email,
-        mobile: student.mobile,
-        designation: student.designation
-      });
+    
+    const paymentModal = bootstrap.Modal.getInstance(
+      document.getElementById("paymentModal")
+    );
+    paymentModal.hide();
 
-      await DashboardServices.addUserInfo({
-        gender: newuser.gender,
-        dob: newuser.dob,
-        aadhar: newuser.aadhar,
-        address: newuser.address,
-        city: newuser.city,
-        state: newuser.state,
-        pincode: newuser.pincode,
-        org_name: newuser.org_name,
-        org_id: newuser.org_id
-      });
 
-      // 3. Upload photo (optional)
-      // if (photo) {
-      //   const formData = new FormData();
-      //   formData.append("profilePic", photo);
-      //   formData.append("guest_name", newuser.guest_name);
+     new bootstrap.Modal(
+     document.getElementById("receiptModal")).show();
 
-      //   await axios.post(
-      //     "http://localhost:3000/upload-student-photo",
-      //     formData,
-      //     { headers: { "Content-Type": "multipart/form-data" } }
-      //   );
-      // }
+  } catch (err) {
+    console.error(err);
+    alert("Payment failed");
+  }
+};
 
-      alert("Details saved successfully!");
+const printReceipt = () => {
+  const receiptContent = document.getElementById("receiptContent").innerHTML;
 
-      // close modal
-      const modal = bootstrap.Modal.getInstance(
-        document.getElementById("userInfoModal")
-      );
-      modal.hide();
+  const printWindow = window.open("", "", "width=800,height=600");
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Payment Receipt</title>
+        <style>
+          body { font-family: Arial; padding: 20px; }
+          h3 { text-align: center; }
+          p { font-size: 14px; }
+        </style>
+      </head>
+      <body>
+        ${receiptContent}
+      </body>
+    </html>
+  `);
 
-    // } catch (err) {
-    //   console.error(err);
-    //   alert("Failed to save booking details");
-    // }
-  };
+  printWindow.document.close();
+  printWindow.print();
+};
+
 
     if (isAdminLoggedIn) {
         return <Dashboard />;
@@ -1146,7 +1225,8 @@ export default function Homepage(){
             <div className="modal-footer">
               
               <button className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-              <button className="btn btn-primary" onClick={handleBooking}>Proceed</button>
+              <button className="btn btn-primary" onClick={openConfirmModal}> Proceed </button>
+
             </div>
 
           </div>
@@ -1233,6 +1313,150 @@ export default function Homepage(){
        </div>
      </div>
     </div>
+
+    {/* after proceed we go to confirm booking*/}
+    {/* Confirm Booking Modal */}
+<div className="modal fade" id="confirmBookingModal" tabIndex="-1">
+  <div className="modal-dialog modal-lg modal-dialog-centered">
+    <div className="modal-content">
+
+      <div className="modal-header">
+        <h5 className="modal-title">Confirm Booking Details</h5>
+        <button className="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div className="modal-body">
+        <p><b>Name:</b> {localStorage.getItem("student_name")}</p>
+        <p><b>Room No.:</b> {localStorage.getItem("student_room")}</p>
+        <p><b>Email:</b> {student.email}</p>
+        <p><b>Mobile:</b> {student.mobile}</p>
+        <p><b>Address:</b> {newuser.address}</p>
+        <hr/>
+        <p><b>Amount:</b> {localStorage.getItem("room_deposit")}</p>
+        
+      </div>
+
+      <div className="modal-footer">
+        <button className="btn btn-secondary" data-bs-dismiss="modal">
+          Edit
+        </button>
+
+        <button className="btn btn-primary" onClick={openPaymentModal}>
+          Confirm & Continue
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+    {/* Payment Modal */}
+<div
+  className="modal fade"
+  id="paymentModal"
+  tabIndex="-1"
+  aria-hidden="true"
+>
+  <div className="modal-dialog modal-lg modal-dialog-centered">
+    <div className="modal-content">
+
+      {/* Header */}
+      <div className="modal-header">
+        <h5 className="modal-title">Payment Details</h5>
+        <button
+          type="button"
+          className="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+
+      {/* Body */}
+      <div className="modal-body">
+
+        <h6 className="fw-bold mb-2">Bank Account Details</h6>
+        <table className="table table-bordered">
+          <tbody>
+            <tr>
+              <th>Bank Name</th>
+              <td>State Bank of India</td>
+            </tr>
+            <tr>
+              <th>Account Number</th>
+              <td>123456789012</td>
+            </tr>
+            <tr>
+              <th>IFSC Code</th>
+              <td>SBIN0001234</td>
+            </tr>
+            <tr>
+              <th>Branch</th>
+              <td>Kurla West</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div className="mb-3">
+        <label className="form-label fw-bold">Transaction ID</label>
+       <input type="text" className="form-control" value={transactionId} onChange={(e) => setTransactionId(e.target.value)}
+      placeholder="Enter transaction ID" /></div>
+
+        <div className="mb-3">
+        <label className="form-label fw-bold">Bank Name</label>
+       <input
+       type="text"
+       className="form-control"
+       value={bankName}
+       onChange={(e) => setBankName(e.target.value)}
+       placeholder="Enter bank name"
+       />
+      </div>
+
+      </div>
+
+      {/* Footer */}
+      <div className="modal-footer">
+        <button
+          className="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Cancel
+        </button>
+        <button className="btn btn-success" onClick={handleBooking}> Confirm Payment</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div className="modal fade" id="receiptModal">
+  <div className="modal-dialog">
+    <div className="modal-content">
+
+      <div className="modal-header">
+        <h5 className="modal-title">Payment Receipt</h5>
+      </div>
+
+      <div className="modal-body" id="receiptContent">
+        <p><b>Room No:</b> {localStorage.getItem("student_room")}</p>
+        <p><b>Transaction ID:</b> {transactionId}</p>
+        <p><b>Bank Name:</b> {bankName}</p>
+        <p><b>Amount:</b> ₹{localStorage.getItem("room_deposit")}</p>
+        <p><b>Status:</b> Paid</p>
+      </div>
+
+      <div className="modal-footer">
+        <button className="btn btn-primary" onClick={printReceipt}>
+          Print Receipt
+        </button>
+        <button className="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
 
     </>
     )

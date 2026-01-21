@@ -16,13 +16,20 @@ select * from booking_info;
 ********************************** Login data **********************************
 
 USE project;
-create table user_info (guest_name varchar(50) not null, username VARCHAR(100) not null, password VARCHAR(100) not null,gender varchar(20), dob date, aadhar double, address varchar(100), city varchar(50),state varchar(20), pincode int, org_name varchar(50), org_id varchar(50), temp_check_in date,isAdmin boolean);
-INSERT INTO user_info (guest_name, username, password,gender, dob, aadhar, address, city,state, pincode, org_name, org_id, temp_check_in,isAdmin) VALUES
-('Anirudh Deshmukh','anirudh','anirudh123',null,null,null,null,null,null,null,null,null,null,true),
-('Anjali Gupta','student1','student123','f','2002-05-13',354623784537,'Type-D 20/3 Andheri West','Mumbai','Maharashtra',401502,'CDAC','FT34345211','2025-03-10',false);
+create table user_info (guest_name varchar(50), username VARCHAR(100), password VARCHAR(100),gender varchar(20), dob date, aadhar varchar(50), address varchar(100), city varchar(50),state varchar(20), pincode int, org_name varchar(50), org_id varchar(50),isAdmin boolean);
+INSERT INTO user_info (guest_name, username, password,gender, dob, aadhar, address, city,state, pincode, org_name, org_id,isAdmin) VALUES
+('Anirudh Deshmukh','anirudh','anirudh123',null,null,null,null,null,null,null,null,null,true),
+('Anjali Gupta','student1','student123','f','2002-05-13',354623784537,'Type-D 20/3 Andheri West','Mumbai','Maharashtra',401502,'CDAC','FT34345211',false);
+-- ('Divya Patel','student2','student123',false),
+-- ('Neha Singh','student2','student123',false),
+-- ('Pooja Jain','student3','student123',false),
+-- ('Rajesh Pillai','student4','student123',false),
+-- ('Rohit Mehra','student5','student123',false),
+-- ('Vikram Rao','student6','student123',false);
 
+	select * from user_info;
 
-select * from logging_info;
+drop table user_info;
 
 ********************************** Rooms data **********************************
 
@@ -67,7 +74,7 @@ select * from payments;
 ********************************** Tenant Complaints **********************************
 
 use project;
-create table complaints(comp_id int primary key auto_increment, guest_name varchar(50), room_no int, comp_type varchar(50), compaint varchar(50), comp_date date, is_resolved bool);
+create table complaints(comp_id int primary key auto_increment, guest_name varchar(50), room_no int, comp_type varchar(50), complaint varchar(50), comp_date date, is_resolved bool);
 
 
 select * from complaints;
