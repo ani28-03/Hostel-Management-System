@@ -56,6 +56,9 @@ export default function Homepage(){
     complaint: ""
     })
 
+    const [receiptData, setReceiptData] = useState(null);
+
+
     useEffect(() => {
     const admin = localStorage.getItem("isAdminLoggedIn");
     const Student = localStorage.getItem("isStudentLoggedIn");
@@ -247,6 +250,9 @@ export default function Homepage(){
     setSelectedRoom(room);
     localStorage.setItem("student_room", room.room_no);
     console.log(localStorage.getItem("student_room"));
+    localStorage.setItem("room_deposit", room.deposit);
+    console.log(localStorage.getItem("room_deposit"));
+
 
     const storedName = localStorage.getItem("student_name") || "";
 
@@ -265,67 +271,6 @@ export default function Homepage(){
   }));
 };
 
-    
-
-//   const handleBooking = async () => {
-//   const {
-//     guest_name,
-//     gender,
-//     dob,
-//     aadhar,
-//     address,
-//     city,
-//     state,
-//     pincode,
-//     org_name,
-//     org_id
-//   } = newuser;
-
-//   const { email, mobile, designation } = student;
-
-//   if (
-//     !email || !mobile || !gender || !dob || !aadhar || !address || !city || !state || !pincode || !org_name || !org_id || !designation) {
-//     alert("Please fill all mandatory fields");
-//     return;
-//   }
-//   console.log(typeof aadhar);
-  
-//   try {
-//     await DashboardServices.addStudent(student);
-
-//     await DashboardServices.addUserInfo(newuser);
-
-//     alert("Details saved successfully!");
-
-//     const modal = bootstrap.Modal.getInstance(
-//       document.getElementById("userInfoModal")
-//     );
-//     modal.hide();
-//   } catch (err) {
-//     console.error(err);
-//     alert("Failed to save booking details");
-//   }
-// };
-
-
-      // 3. Upload photo (optional)
-      // if (photo) {
-      //   const formData = new FormData();
-      //   formData.append("profilePic", photo);
-      //   formData.append("guest_name", newuser.guest_name);
-
-      //   await axios.post(
-      //     "http://localhost:3000/upload-student-photo",
-      //     formData,
-      //     { headers: { "Content-Type": "multipart/form-data" } }
-      //   );
-      // }
-
-      // close modal
-  //     const modal = bootstrap.Modal.getInstance(
-  //       document.getElementById("userInfoModal")
-  //     );
-  //     modal.hide();
 
   //confirm booking after proceed
  const openConfirmModal = () => {
@@ -390,20 +335,26 @@ const openPaymentModal = () => {
 
 
 const handleBooking = async () => {
-  if (!transactionId || !bankName) {
+  if (!transactionId || !bankName) {11
     alert("Please enter transaction details");
     return;
   }
 
+  const dueDate = new Date();
+  dueDate.setDate(dueDate.getDate() + 3);
+  const formattedDueDate = dueDate.toISOString().split("T")[0];
+
+  localStorage.setItem("due_date",formattedDueDate);
+
+
   try {
     
     await DashboardServices.addPayment({
-      room_no: selectedRoomNo,     // pass from UI
-      type: "rent",
-      amount: rentAmount,
-      due_date: dueDate,
-      paid_date: new Date(),
-      isPaid: true,
+      room_no: localStorage.getItem("student_room"),  
+      type: "deposit",
+      amount: localStorage.getItem("room_deposit"),
+      due_date: formattedDueDate,
+      isPaid: false,
       transaction_id: transactionId,
       bank_name: bankName
     });
@@ -419,13 +370,39 @@ const handleBooking = async () => {
     );
     paymentModal.hide();
 
+
+     new bootstrap.Modal(
+     document.getElementById("receiptModal")).show();
+
   } catch (err) {
     console.error(err);
     alert("Payment failed");
   }
 };
 
+const printReceipt = () => {
+  const receiptContent = document.getElementById("receiptContent").innerHTML;
 
+  const printWindow = window.open("", "", "width=800,height=600");
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Payment Receipt</title>
+        <style>
+          body { font-family: Arial; padding: 20px; }
+          h3 { text-align: center; }
+          p { font-size: 14px; }
+        </style>
+      </head>
+      <body>
+        ${receiptContent}
+      </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+  printWindow.print();
+};
 
 
     if (isAdminLoggedIn) {
@@ -1349,13 +1326,14 @@ const handleBooking = async () => {
       </div>
 
       <div className="modal-body">
+        <p><b>Name:</b> {localStorage.getItem("student_name")}</p>
+        <p><b>Room No.:</b> {localStorage.getItem("student_room")}</p>
         <p><b>Email:</b> {student.email}</p>
         <p><b>Mobile:</b> {student.mobile}</p>
-        <p><b>Gender:</b> {newuser.gender}</p>
-        <p><b>DOB:</b> {newuser.dob}</p>
         <p><b>Address:</b> {newuser.address}</p>
-        <p><b>Organization:</b> {newuser.org_name}</p>
-        <p><b>Designation:</b> {student.designation}</p>
+        <hr/>
+        <p><b>Amount:</b> {localStorage.getItem("room_deposit")}</p>
+        
       </div>
 
       <div className="modal-footer">
@@ -1448,6 +1426,37 @@ const handleBooking = async () => {
     </div>
   </div>
 </div>
+
+    <div className="modal fade" id="receiptModal">
+  <div className="modal-dialog">
+    <div className="modal-content">
+
+      <div className="modal-header">
+        <h5 className="modal-title">Payment Receipt</h5>
+      </div>
+
+      <div className="modal-body" id="receiptContent">
+        <p><b>Room No:</b> {localStorage.getItem("student_room")}</p>
+        <p><b>Transaction ID:</b> {transactionId}</p>
+        <p><b>Bank Name:</b> {bankName}</p>
+        <p><b>Amount:</b> ₹{localStorage.getItem("room_deposit")}</p>
+        <p><b>Due Date:</b> {localStorage.getItem("due_date")}</p>
+        <p><b>Status:</b> Paid</p>
+      </div>
+
+      <div className="modal-footer">
+        <button className="btn btn-primary" onClick={printReceipt}>
+          Print Receipt
+        </button>
+        <button className="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 
 
     </>
