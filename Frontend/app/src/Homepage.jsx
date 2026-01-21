@@ -41,8 +41,7 @@ export default function Homepage(){
       state:"", 
       pincode:"", 
       org_name:"", 
-      org_id:"", 
-      temp_check_in:"",
+      org_id:"",
       isAdmin:0
     })
 
@@ -133,58 +132,6 @@ export default function Homepage(){
         setNewuser({...newuser, [event.target.name]:event.target.value});
     };
 
-    const handleAadharChange = (e) => {
-  let value = e.target.value;
-
-  value = value.replace(/\D/g, '');
-
-  if (value.length > 4 && value.length <= 8) {
-    value = value.replace(/(\d{4})(\d+)/, '$1-$2');
-  } else if (value.length > 8) {
-    value = value.replace(/(\d{4})(\d{4})(\d+)/, '$1-$2-$3');
-  }
-
-  setNewuser({
-    ...newuser,
-    aadhar: value
-  });
-};
-
-
-    const handleRegister=async()=>{
-        const {guest_name,newUsername,newPassword,isAdmin} =newuser;
-        if(!guest_name||!newUsername||!newPassword){
-            alert("Enter All Fields!!");
-            return;
-        }
-        if(newuser.newPassword!=confirmPassword){
-          alert("Password not matching!!");
-          return;
-        }
-        // converting variable names as required for the api addNewUsername 
-        const newuser_details = {
-            guest_name,
-            username: newUsername,
-            password: newPassword,
-            isAdmin
-        };
-
-        console.log(newuser_details);
-
-        await DashboardServices.addNewUsername(newuser_details);
-
-        setNewuser({
-          guest_name:"",
-          newUsername:"",
-          newPassword:"",
-          isAdmin:0
-        })
-
-        setconfirmPassword("");
-
-        alert(`Welcome ${newuser.guest_name}!! Login in again to Sign-In!!`);
-    };
-
 
     // Login handles
     const handlelogin = async()=>{
@@ -232,6 +179,62 @@ export default function Homepage(){
         alert("User not found!");
     }
     }
+
+
+    const handleAadharChange = (e) => {
+  let value = e.target.value;
+
+  value = value.replace(/\D/g, '');
+
+  if (value.length > 4 && value.length <= 8) {
+    value = value.replace(/(\d{4})(\d+)/, '$1-$2');
+  } else if (value.length > 8) {
+    value = value.replace(/(\d{4})(\d{4})(\d+)/, '$1-$2-$3');
+  }
+
+  setNewuser({
+    ...newuser,
+    aadhar: value
+  });
+};
+
+    //For signUp
+    const handleRegister=async()=>{
+        const {guest_name,newUsername,newPassword,isAdmin} =newuser;
+        if(!guest_name||!newUsername||!newPassword){
+            alert("Enter All Fields!!");
+            return;
+        }
+        if(newuser.newPassword!=confirmPassword){
+          alert("Password not matching!!");
+          return;
+        }
+        // converting variable names as required for the api addNewUsername 
+        const newuser_details = {
+            guest_name,
+            username: newUsername,
+            password: newPassword,
+            isAdmin
+        };
+
+        console.log(newuser_details);
+
+        await DashboardServices.addNewUsername(newuser_details);
+
+        setNewuser({
+          guest_name:"",
+          newUsername:"",
+          newPassword:"",
+          isAdmin:0
+        })
+
+        setconfirmPassword("");
+
+        alert(`Welcome ${newuser.guest_name}!! Login in again to Sign-In!!`);
+    };
+
+
+    
 
   const handleBooking = async () => {
   if (!photo) {

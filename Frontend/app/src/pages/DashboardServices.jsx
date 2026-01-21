@@ -5,6 +5,7 @@ const base = 'http://localhost:3000';
 export const DashboardServices = {
     getAll: async () => (await axios.get(base + "/tenants")).data,
     getRooms: async() => (await axios.get(base + "/rooms")).data,
+    getUserInfo: async(guest_name) => (await axios.get(`${base}/users/${guest_name}`)).data,
     getPassword: async (username) => (await axios.get(`${base}/getPassword/${username}`)).data,
     getPayment: async () => (await axios.get(base + "/payments")).data,
 
@@ -14,6 +15,7 @@ export const DashboardServices = {
     add: async (rec) => (await axios.post(base + "/tenants", rec)).data,
     addRoom: async (rec) => (await axios.post(base + "/rooms", rec)).data,
     addStudent: async (rec) => (await axios.post(base + "/student", rec)).data,
+    addUserInfo: async (rec) => (await axios.post(base + "/users", rec)).data,
     addNewUsername: async (rec) => (await axios.post(base + "/newuser", rec)).data,
     addPayment: async (rec) => (await axios.post(base + "/payments", rec)).data,
 
