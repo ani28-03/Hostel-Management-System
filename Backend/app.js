@@ -64,7 +64,7 @@ const changePaid = "update payments set isPaid=1,paid_date=? where payment_id=?"
 const add = "insert into booking_info(booking_id,guest_name, room_no, check_in_date, check_out_date,email,mobile,designation) values(?,?,?,?,?,?,?,?)";
 const addRoom = "insert into rooms(room_no, floor, type, rent, deposit, ac, wifi, tv, parking, meals) values(?,?,?,?,?,?,?,?,?,?)";
 const addNewStudent = "insert into booking_info(guest_name,email,mobile,designation) values(?,?,?,?);";
-const addUserInfo = "insert into user_info(gender, dob, aadhar, address, city, state, pincode, org_name, org_id) values(?,?,?,?,?,?,?,?,?)"
+const addUserInfo = "UPDATE user_info SET gender = ?, dob = ?,aadhar = ?, address = ?, city = ?, state = ?, pincode = ?, org_name = ?, org_id = ? WHERE guest_name = ?";
 const addNewUsername = "insert into user_info(guest_name,username,password,isAdmin) values (?,?,?,?)";
 const addPayment = "insert into payments(payment_id, room_no, type, amount, due_date, isPaid) values(?,?,?,?,?,?)";
 
@@ -192,16 +192,22 @@ app.post("/student", (req, res) => {
 });
 
 app.post("/users", (req, res) => {
-    const { gender, dob, aadhar, address, city, state, pincode, org_name, org_id } = req.body;
+  const {guest_name,gender,dob,aadhar,address,city,state,pincode,org_name,org_id} = req.body;
 
-    db.query(addUserInfo, [gender, dob, aadhar, address, city, state, pincode, org_name, org_id], (err, results) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-
-        return res.json({ gender, dob, aadhar, address, city, state, pincode, org_name, org_id });
-    });
+  db.query(
+    addUserInfo,
+    [gender, dob, aadhar, address, city, state, pincode, org_name, org_id,guest_name],
+    (err, results) => {
+      if (err) {
+        console.error("MYSQL ERROR:", err);
+        return res.status(500).json({ error: err.message });
+      }
+      res.json({ success: true });
+    }
+  );
 });
+
+
 
 app.post("/newuser", (req, res) => {
     const { guest_name,username,password, isAdmin } = req.body;
