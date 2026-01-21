@@ -20,4 +20,8 @@ export const DashboardServices = {
     remove: async (booking_id) => (await axios.delete(`${base}/tenants/${booking_id}`)).data,
     removeRoom: async (room_no) => (await axios.delete(`${base}/rooms/${room_no}`)).data,
     removePayment: async (payment_id) => (await axios.delete(`${base}/payments/${payment_id}`)).data,
+ 
+    //complaints
+    addComplaint: async (rec) =>(await axios.post(base + "/complaints", rec)).data,
+    getComplaints: async () =>(await axios.get(base + "/complaints")).data,
 };
