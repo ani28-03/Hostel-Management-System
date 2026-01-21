@@ -59,6 +59,7 @@ export default function Homepage(){
     const savedUser = localStorage.getItem("userName");
     const savedPassword = localStorage.getItem("password");
     const student_name = localStorage.getItem("student_name");
+    const student_room = localStorage.getItem("student_room");
 
     if (admin === "true") 
       setIsAdminLoggedIn(true);
@@ -141,62 +142,62 @@ export default function Homepage(){
 
     // Login handles
     const handlelogin = async()=>{
-    try{
-      const rightPassword = await DashboardServices.getPassword(userName);
-      const guestName = rightPassword[0].guest_name;
+      try{
+        const rightPassword = await DashboardServices.getPassword(userName);
+        const guestName = rightPassword[0].guest_name;
 
-      if (rightPassword[0].isAdmin && password == rightPassword[0].password) {
-        alert("Login admin Successful!!");
-        setIsAdminLoggedIn(true);
+        if (rightPassword[0].isAdmin && password == rightPassword[0].password) {
+          alert("Login admin Successful!!");
+          setIsAdminLoggedIn(true);
 
-        localStorage.setItem("isAdminLoggedIn", "true");
-        localStorage.setItem("userName", userName);
-        localStorage.setItem("password", password);
+          localStorage.setItem("isAdminLoggedIn", "true");
+          localStorage.setItem("userName", userName);
+          localStorage.setItem("password", password);
 
-        // console.log(rightPassword);
-      }
+          // console.log(rightPassword);
+        }
 
-      else if (password == rightPassword[0].password) {
-            alert("Login Successful!!");
-            setIsStudentLoggedIn(true);
+        else if (password == rightPassword[0].password) {
+              alert("Login Successful!!");
+              setIsStudentLoggedIn(true);
 
-            localStorage.setItem("isStudentLoggedIn", "true");
-            localStorage.setItem("userName", userName);
-            localStorage.setItem("password", password);
+              localStorage.setItem("isStudentLoggedIn", "true");
+              localStorage.setItem("userName", userName);
+              localStorage.setItem("password", password);
 
-            setsavedGuest_name(guestName);
-            localStorage.setItem("student_name", guestName);
-            
+              setsavedGuest_name(guestName);
+              localStorage.setItem("student_name", guestName);
+              
+              console.log(rightPassword);
+              console.log(savedGuest_name);
+        }
+
+        else{
             console.log(rightPassword);
-            console.log(savedGuest_name);
+            console.log("Match?", password === rightPassword[0].password);
+            alert("Invalid username or password!");
+        }
+        const LoginModal = bootstrap.Modal.getInstance(document.getElementById("loginModal"));
+        LoginModal.hide();
+
+        // SignUpModal.hide();
+
+      }catch (err) {
+          alert("User not found!");
       }
-
-      else{
-          console.log(rightPassword);
-          console.log("Match?", password === rightPassword[0].password);
-          alert("Invalid username or password!");
       }
-      const LoginModal = bootstrap.Modal.getInstance(document.getElementById("loginModal"));
-      LoginModal.hide();
-
-      // SignUpModal.hide();
-
-    }catch (err) {
-        alert("User not found!");
-    }
-    }
 
 
     const handleAadharChange = (e) => {
-    let value = e.target.value;
+      let value = e.target.value;
 
-    value = value.replace(/\D/g, '');
+      value = value.replace(/\D/g, '');
 
-    if (value.length > 4 && value.length <= 8) {
-      value = value.replace(/(\d{4})(\d+)/, '$1-$2');
-    } else if (value.length > 8) {
-      value = value.replace(/(\d{4})(\d{4})(\d+)/, '$1-$2-$3');
-    }
+      if (value.length > 4 && value.length <= 8) {
+        value = value.replace(/(\d{4})(\d+)/, '$1-$2');
+      } else if (value.length > 8) {
+        value = value.replace(/(\d{4})(\d{4})(\d+)/, '$1-$2-$3');
+      }
 
     setNewuser({
       ...newuser,
@@ -241,7 +242,10 @@ export default function Homepage(){
 
   //prefilled guest_name for Booking Model
   const handleOpenBooking = (room) => {
-    setSelectedRoom(room);
+
+    setSelectedRoom(room.room_no);
+    localStorage.setItem("student_room", room.room_no);
+    console.log(localStorage.getItem("student_room"));
 
     const storedName = localStorage.getItem("student_name") || "";
 
@@ -262,7 +266,7 @@ export default function Homepage(){
 
     
 
-  const handleBooking = async () => {
+  const handleBooking = async (room) => {
   const {
     guest_name,
     gender,
@@ -283,12 +287,13 @@ export default function Homepage(){
     alert("Please fill all mandatory fields");
     return;
   }
-  console.log(typeof aadhar);
+  //console.log(typeof aadhar);
   
   try {
     await DashboardServices.addStudent(student);
 
     await DashboardServices.addUserInfo(newuser);
+    console.log(localStorage.getItem("student_room"));
 
     alert("Details saved successfully!");
 
