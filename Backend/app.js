@@ -14,7 +14,7 @@ app.use(cors());
 const db = sql.createConnection({
     host:"localhost",
     user:"root",
-    password:"qwerty",
+    password:"Gargi@2412",
     database:"project",
     dateStrings:true
 });
@@ -71,6 +71,9 @@ const addPayment = "insert into payments(payment_id, room_no, type, amount, due_
 const delID = "delete from booking_info where booking_id=?";
 const delRoom = "delete from rooms where room_no=?";
 const delPayment = "delete from payments where payment_id=?";
+
+const addComplaint = "insert into complaints(guest_name, room_no, comp_type, complaint, comp_date, is_resolved) values (?, ?, ?, ?, ?, ?)";
+
 
 
 app.get("/tenants",(req,res)=>{
@@ -256,6 +259,20 @@ app.delete("/payments/:payment_id",(req,res)=>{
         return res.status(200).json({message:"Successfully Deleted"});
     })
 })
+//Report an issue
+app.post("/complaints", (req, res) => {
+  const { guest_name, room_no, comp_type, complaint, comp_date, is_resolved } = req.body;
+
+  db.query(
+    addComplaint,
+    [guest_name, room_no, comp_type, complaint, comp_date, is_resolved],
+    (err, result) => {
+      if (err) return res.status(500).json(err);
+      res.status(201).json({ message: "Complaint added" });
+    }
+  );
+})
+
 
 app.listen((port),()=>{
     console.log(`Listening on ${port}!!!`)

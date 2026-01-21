@@ -45,6 +45,14 @@ export default function Homepage(){
       isAdmin:0
     })
 
+    //complaints useState: Report an issue
+    const [complaint, setComplaint] = useState({
+    guest_name: "",
+    room_no: "",
+    comp_type: "",
+    complaint: ""
+    })
+
     useEffect(() => {
     const admin = localStorage.getItem("isAdminLoggedIn");
     const Student = localStorage.getItem("isStudentLoggedIn");
@@ -72,6 +80,46 @@ export default function Homepage(){
         const data = await DashboardServices.getRooms();
         setRooms(data);
     };
+
+     //handle complaints: Report an issue
+  const handleComplaintChange = (e) => {
+  setComplaint({ ...complaint, [e.target.name]: e.target.value });
+  };
+
+  const submitComplaint = async () => {
+  try {
+    if (
+      !complaint.guest_name ||
+      !complaint.room_no ||
+      !complaint.comp_type ||
+      !complaint.complaint
+    ) {
+      alert("Please fill all fields");
+      return;
+    }
+
+    const data = {
+      ...complaint,
+      comp_date: new Date().toISOString().split("T")[0],
+      is_resolved: false
+    };
+
+  
+    await DashboardServices.addComplaint(data);
+
+    alert("Complaint submitted successfully");
+
+    
+    bootstrap.Modal.getInstance(
+      document.getElementById("complaintModal")
+    ).hide();
+
+  } catch (err) {
+    console.error(err);
+    alert("Failed to submit complaint");
+  }
+};
+
 
 
     // Sign-Up handles
@@ -142,23 +190,22 @@ export default function Homepage(){
     }
 
 
-    //For aadhar input format
     const handleAadharChange = (e) => {
-      let value = e.target.value;
+    let value = e.target.value;
 
-      value = value.replace(/\D/g, '');
+    value = value.replace(/\D/g, '');
 
-      if (value.length > 4 && value.length <= 8) {
-        value = value.replace(/(\d{4})(\d+)/, '$1-$2');
-      } else if (value.length > 8) {
-        value = value.replace(/(\d{4})(\d{4})(\d+)/, '$1-$2-$3');
-      }
+    if (value.length > 4 && value.length <= 8) {
+      value = value.replace(/(\d{4})(\d+)/, '$1-$2');
+    } else if (value.length > 8) {
+      value = value.replace(/(\d{4})(\d{4})(\d+)/, '$1-$2-$3');
+    }
 
-      setNewuser({
-        ...newuser,
-        aadhar: value
-      });
-    };
+    setNewuser({
+      ...newuser,
+      aadhar: value
+    });
+  };
 
     //For signUp
   const handleRegister=async()=>{
@@ -323,7 +370,9 @@ export default function Homepage(){
                 <ul className="dropdown-menu dropdown-menu-end animated-dropdown">
                   <li className="dropdown-animate"><a className="dropdown-item" onClick={()=>setActiveTab("profile")}>Profile</a></li>
                   <li className="dropdown-animate"><a className="dropdown-item" href="#rooms-header">MyRoom</a></li>
-                  <li className="dropdown-animate"><a className="dropdown-item" href="#">Report an Issue</a></li>
+                  {/*<li className="dropdown-animate"><a className="dropdown-item" href="#">Report an Issue</a></li>*/}
+                  <li className="dropdown-animate"><a className="dropdown-item" href="#"data-bs-toggle="modal" data-bs-target="#complaintModal">Report an Issue </a></li>
+
                   <li className="dropdown-animate"><a className="dropdown-item" href="#">Student Life</a></li>
                   <li className="dropdown-animate"><a className="dropdown-item" href="#footer_col4">Contact us</a></li>
                 </ul>
@@ -1092,6 +1141,88 @@ export default function Homepage(){
           </div>
         </div>
       </div>
+
+
+      {/* Complaint / Report an issue Modal */}
+     <div id="complaintModal" className="modal fade" tabIndex="-1">
+     <div className="modal-dialog modal-lg">
+     <div className="modal-content">
+
+      <div className="modal-header">
+        <h5 className="modal-title text-danger">Report an Issue</h5>
+        <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div className="modal-body">
+
+        <div className="row">
+          <div className="col-md-6">
+            Guest Name<span className="text-danger">*</span>
+            <input
+              type="text"
+              className="form-control mb-2"
+              name="guest_name"
+              value={complaint.guest_name}
+              onChange={handleComplaintChange}
+            />
+
+            Room No<span className="text-danger">*</span>
+            <input
+              type="number"
+              className="form-control mb-2"
+              name="room_no"
+              value={complaint.room_no}
+              onChange={handleComplaintChange}
+            />
+
+            Complaint Type<span className="text-danger">*</span>
+            <select
+              className="form-control mb-2"
+              name="comp_type"
+              value={complaint.comp_type}
+              onChange={handleComplaintChange}
+            >
+              <option value="">--Select--</option>
+              <option value="Amenities">Amenities</option>
+              <option value="Food">Food</option>
+              <option value="Electrical">Electrical</option>
+              <option value="Plumbing">Plumbing</option>
+              <option value="Pest">Pest</option>
+              <option value="Bed">Bed</option>
+               <option value="Room">Room</option>
+              <option value="Cleaning">Cleaning</option>
+              <option value="Internet">Internet</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div className="col-md-6">
+            Complaint<span className="text-danger">*</span>
+            <textarea
+              className="form-control mb-2"
+              rows="6"
+              name="complaint"
+              value={complaint.complaint}
+              onChange={handleComplaintChange}
+              placeholder="Describe your issue"
+            ></textarea>
+          </div>
+        </div>
+
+      </div>
+
+        <div className="modal-footer">
+        <button className="btn btn-secondary" data-bs-dismiss="modal">
+          Cancel
+        </button>
+        <button className="btn btn-danger" onClick={submitComplaint}>
+          Submit Complaint
+        </button>
+         </div>
+       </div>
+     </div>
+    </div>
+
     </>
     )
 }
