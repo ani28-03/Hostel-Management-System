@@ -67,7 +67,7 @@ select * from payments;
 ********************************** Tenant Complaints **********************************
 
 use project;
-create table complaints(comp_id int primary key auto_increment, guest_name varchar(50), room_no int, comp_type varchar(50), compaint varchar(50), comp_date date, is_resolved bool);
+create table complaints(comp_id int primary key auto_increment, guest_name varchar(50), room_no int, comp_type varchar(50), complaint varchar(50), comp_date date, is_resolved bool);
 
 
 select * from complaints;
