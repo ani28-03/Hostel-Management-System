@@ -91,10 +91,31 @@ export default function Tenants(){
         await showTenants();
     };
 
+    const TOTAL_FLOORS = 3;
+
+    const floorChartData = Array.from({ length: TOTAL_FLOORS }, (_, index) => {
+        const floorNumber = index + 1;
+
+        const count = tenants.filter(
+            t => t.room_no?.toString().startsWith(floorNumber.toString())
+        ).length;
+
+        return {
+            floor: `Floor ${floorNumber}`,
+            tenants: count
+        };
+    });
+
+
+
     return(
         <>
         <div className='container-fluid'>
                     <div className="row">
+
+                        
+
+
                         <div className="col-md-8">
                             <h1>Tenants</h1>
                             <h5>Manage PG Tenants and thier information</h5>
@@ -107,7 +128,40 @@ export default function Tenants(){
                             </button>
                         </div><hr/>
                     </div>
-                    
+
+                    <div className="row mb-4">
+                            <div className="col-md-6">
+                                <div className="card shadow-sm p-3">
+                                    <h5 className="text-center mb-3">
+                                        Tenants per Floor
+                                    </h5>
+
+                                    <div style={{ width: "100%", height: 220 }}>
+                                        <ResponsiveContainer>
+                                            <BarChart data={floorChartData}>
+                                                <CartesianGrid strokeDasharray="3 3" />
+                                                <XAxis dataKey="floor" />
+                                                <YAxis
+                                                    allowDecimals={false}
+                                                    domain={[0, dataMax => Math.max(dataMax + 1, 3)]}
+                                                />
+                                                <Tooltip />
+                                                <Legend />
+
+                                                <Bar
+                                                    dataKey="tenants"
+                                                    name="Tenants"
+                                                    barSize={28}
+                                                    radius={[6, 6, 0, 0]}
+                                                    fill="#20c997"
+                                                />
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     <div id='row1' className='row'>
 
                             <div id='tenant-col-card' className='col-md-10'>
