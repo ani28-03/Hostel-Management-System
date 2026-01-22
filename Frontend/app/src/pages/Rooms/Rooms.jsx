@@ -1,7 +1,7 @@
 import react,{useState,useEffect} from 'react';
 import { DashboardServices } from '../DashboardServices';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
+import {PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid} from "recharts";
 import './Rooms.css';
 import Tenants from '../Tenants/Tenants';
 
@@ -46,6 +46,10 @@ export default function Rooms(){
             setStatistics({ totalRooms: total, occupiedRooms: occupied });
         }
     }, [rooms]);
+
+    useEffect(() => {
+    console.log("Rooms data:", rooms);
+}, [rooms]);
 
     const showRooms= async()=>{
         const data = await DashboardServices.getRooms();
@@ -131,6 +135,59 @@ export default function Rooms(){
     //     return(<Tenants />);
     // }
 
+    const RADIAN = Math.PI / 180;
+
+    const renderLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+        const radius = innerRadius + (outerRadius - innerRadius) * 0.6;
+        const x = cx + radius * Math.cos(-midAngle * RADIAN);
+        const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+        return (
+            <text
+                x={x}
+                y={y}
+                fill="#000000"
+                textAnchor={x > cx ? "start" : "end"}
+                dominantBaseline="central"
+                style={{ fontSize: "12px", fontWeight: 600 }}
+            >
+                {(percent * 100).toFixed(0)}%
+            </text>
+        );
+    };
+
+    const roomTypeData = [
+        {
+            type: "Single",
+            occupied: rooms.filter(
+                r =>
+                    r.type?.toLowerCase() === "single" &&
+                    r.guest_name !== null &&
+                    r.guest_name !== ""
+            ).length
+        },
+        {
+            type: "Double",
+            occupied: rooms.filter(
+                r =>
+                    r.type?.toLowerCase() === "double" &&
+                    r.guest_name !== null &&
+                    r.guest_name !== ""
+            ).length
+        },
+        {
+            type: "Ensuite",
+            occupied: rooms.filter(
+                r =>
+                    r.type?.toLowerCase() === "ensuite" &&
+                    r.guest_name !== null &&
+                    r.guest_name !== ""
+            ).length
+        }
+    ];
+
+
+
     return(
         <>
         <div className='container-fluid'>
@@ -149,25 +206,107 @@ export default function Rooms(){
                 </div>
             </div>
 
-            <div className="row">
-                <PieChart width={300} height={300}>
-                <Pie
-                    data={data}
-                    cx={150}
-                    cy={150}
-                    outerRadius={120}
-                    dataKey="value"
-                    label
-                >
-                    {data.map((entry, index) => (
-                    <Cell key={index} fill={colors[index]} />
-                    ))}
-                </Pie>
+            {/* Pie chart  */}
+            <div className="row mb-4">
+                <div className="col-md-4">
+                    <div className="card shadow-sm p-3">
+                        <h5 className="text-center mb-2">Room Occupancy</h5>
 
-                <Tooltip />
-                <Legend />
-                </PieChart>
+                        <div style={{ width: "100%", height: 280 }}>
+                            <ResponsiveContainer>
+                                <PieChart>
+                                    <defs>
+                                        {colors.map((color, index) => (
+                                            <linearGradient
+                                                key={index}
+                                                id={`grad-${index}`}
+                                                x1="0"
+                                                y1="0"
+                                                x2="1"
+                                                y2="1"
+                                            >
+                                                <stop offset="0%" stopColor={color} stopOpacity={0.9} />
+                                                <stop offset="100%" stopColor={color} stopOpacity={0.6} />
+                                            </linearGradient>
+                                        ))}
+                                    </defs>
+
+                                    <Pie
+                                        data={data}
+                                        cx="50%"
+                                        cy="50%"
+                                        innerRadius={70}
+                                        outerRadius={110}
+                                        paddingAngle={4}
+                                        dataKey="value"
+                                        labelLine={false}
+                                        label={renderLabel}
+                                        animationDuration={800}
+                                        activeOuterRadius={120}
+                                    >
+                                        {data.map((_, index) => (
+                                            <Cell key={index} fill={`url(#grad-${index})`} />
+                                        ))}
+                                    </Pie>
+
+                                    {/* Center text */}
+                                    <text
+                                        x="50%"
+                                        y="50%"
+                                        textAnchor="middle"
+                                        dominantBaseline="middle"
+                                        style={{ fontSize: "18px", fontWeight: 700 }}
+                                    >
+                                        {statistics.totalRooms}
+                                    </text>
+                                    <text
+                                        x="50%"
+                                        y="57%"
+                                        textAnchor="middle"
+                                        dominantBaseline="middle"
+                                        style={{ fontSize: "12px", fill: "#666" }}
+                                    >
+                                        Total Rooms
+                                    </text>
+
+                                    <Tooltip />
+                                    <Legend verticalAlign="bottom" height={36} />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                </div>
+
+            {/* bar chart  */}
+                <div className="col-md-6">
+                    <div className="card shadow-sm p-3">
+                        <h5 className="text-center mb-3">
+                            Occupied Rooms by Type
+                        </h5>
+
+                        <div style={{ width: "100%", height: 273 }}>
+                            <ResponsiveContainer>
+                                <BarChart data={roomTypeData}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="type" />
+                                    <YAxis allowDecimals={false} />
+                                    <Tooltip />
+                                    <Legend />
+
+                                    <Bar
+                                        dataKey="occupied"
+                                        name="Occupied Rooms"
+                                        radius={[6, 6, 0, 0]}
+                                        fill="#1e90ff"
+                                    />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+
             <div className="row">
                 <div className='col-md-12'>
                     <div className='row'>

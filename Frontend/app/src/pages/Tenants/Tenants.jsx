@@ -1,6 +1,7 @@
 import react,{useState,useEffect} from 'react';
 import { DashboardServices } from '../DashboardServices';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer} from "recharts";
 import './Tenants.css';
 
 export default function Tenants(){
