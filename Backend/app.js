@@ -218,7 +218,7 @@ app.put("/maintenance/status/:id", (req, res) => {
 
 app.post("/tenants", (req, res) => {
     const { booking_id, guest_name, room_no, check_in_date, check_out_date,email,mobile,designation} = req.body;
-
+    console.log(req.body);
     db.query(add, [booking_id, guest_name, room_no, check_in_date, check_out_date,email,mobile,designation], (err, results) => {
         if (err) {
             return res.status(500).json({ error: err.message });
