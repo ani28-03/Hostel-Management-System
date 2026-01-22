@@ -206,15 +206,25 @@ app.put("/complaints/:comp_id",(req,res)=>{
     })
 })
 
-app.put("/maintenance/status/:id", (req, res) => {
+app.put("/maintenance/:id", (req, res) => {
+  const { id } = req.params;
   const { status } = req.body;
 
-  db.query(changeMaintain,[status, req.params.id],(err) => {
-      if (err) return res.status(500).json(err);
-      res.json({ message: "Status updated" });
+  const sql = "UPDATE maintenance SET status = ? WHERE main_id = ?";
+
+  db.query(sql, [status, id], (err, result) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
     }
-  );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Maintenance record not found" });
+    }
+
+    res.json({ message: "Status updated successfully" });
+  });
 });
+
 
 
 app.post("/tenants", (req, res) => {
