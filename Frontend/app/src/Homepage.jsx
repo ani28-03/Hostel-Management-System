@@ -472,11 +472,9 @@ const printReceipt = () => {
               {isStudentLoggedIn?(
                 <ul className="dropdown-menu dropdown-menu-end animated-dropdown">
                   <li className="dropdown-animate"><a className="dropdown-item" onClick={()=>setActiveTab("profile")}>Profile</a></li>
-                  {selectedRoom?(
+                  
                     <li className="dropdown-animate"><a className="dropdown-item" href="#"data-bs-toggle="modal" data-bs-target="#complaintModal" onClick={handleOpenComplaintModal}>Report an Issue </a></li>
-                  ):(
-                    <li className="dropdown-animate"><a className="dropdown-item" href="#rooms-header">Rooms</a></li>
-                  )}
+    
                   <li className="dropdown-animate"><a className="dropdown-item" href="#">Student Life</a></li>
                   <li className="dropdown-animate"><a className="dropdown-item" href="#footer_col4">Contact us</a></li>
                 </ul>
@@ -823,26 +821,39 @@ const printReceipt = () => {
                           </p>
 
                           {/* Book the room */}
-                          {isStudentLoggedIn?(
+                          {room.guest_name ? (
                             <div className="row">
-                            <div className="col-md-9"></div>
-                            <button
-                              className='col-md-2 bg-warning text-black'
-                              data-bs-toggle="modal"
-                              data-bs-target="#userInfoModal"
-                              onClick={() => handleOpenBooking(room)}>
-                              Select Room
-                            </button>
-                          </div>
-                          ):(
+                              <div className="col-md-9"></div>
+                              <button className="col-md-2 bg-danger text-black">
+                                Unavailable
+                              </button>
+                            </div>
+                          ) : isStudentLoggedIn ? (
                             <div className="row">
-                            <div className="col-md-9"></div>
-                            {/* <button className='col-md-2 bg-warning text-black'>Select Room</button> */}
-                            <button className='col-md-2 bg-warning text-black' data-bs-toggle="modal" data-bs-target="#loginModal">
-                              Select Room
-                            </button>
-                          </div>
+                              <div className="col-md-9"></div>
+                              <button
+                                className="col-md-2 bg-warning text-black"
+                                data-bs-toggle="modal"
+                                data-bs-target="#userInfoModal"
+                                onClick={() => handleOpenBooking(room)}
+                              >
+                                Select Room
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="row">
+                              <div className="col-md-9"></div>
+                              <button
+                                className="col-md-2 bg-warning text-black"
+                                data-bs-toggle="modal"
+                                data-bs-target="#loginModal"
+                              >
+                                Select Room
+                              </button>
+                            </div>
                           )}
+
+                          
                           
                         </div>
                       </div>
@@ -1418,19 +1429,19 @@ const printReceipt = () => {
 
                 <div className="col-md-6">
                   {/*Need to add handleupload and save*/}
-                  Upload your photo<input type="file" name="profilePic" accept="image/*" onChange={(e) => setPhoto(e.target.files[0])}/>
-                  <hr/>
+                  {/* Upload your photo<input type="file" name="profilePic" accept="image/*" onChange={(e) => setPhoto(e.target.files[0])}/> */}
+                  {/* <hr/> */}
                   {/* <br></br> */}
                   Gender<span className='text-danger'>*</span><br/>
                        Male
-                    <input type="radio" name="gender" value="Male" checked={newuser.gender === "Male"} onChange={handleUserChange}/>
+                    <input className='ms-1 me-3' type="radio" name="gender" value="Male" checked={newuser.gender === "Male"} onChange={handleUserChange}/>
 
                     Female
-                    <input type="radio" name="gender" value="Female" checked={newuser.gender === "Female"} onChange={handleUserChange}/>
+                    <input className='ms-1 me-3' type="radio" name="gender" value="Female" checked={newuser.gender === "Female"} onChange={handleUserChange}/>
 
                     Others
-                    <input type="radio" name="gender" value="Others" checked={newuser.gender === "Others"} onChange={handleUserChange}/>
-
+                    <input className='ms-1 me-3' type="radio" name="gender" value="Others" checked={newuser.gender === "Others"} onChange={handleUserChange}/>
+                  <hr/>
                   Date of Birth<span className='text-danger'>*</span><input type="date" className="form-control mb-2" name='dob' value={newuser.dob} onChange={handleUserChange}/>
                   Aadhar<span className='text-danger'>*</span><input type="text" className="form-control mb-2" name="aadhar" value={newuser.aadhar} placeholder="XXXX-XXXX-XXXX" maxLength={14} onChange={handleAadharChange}/>                
                 </div>
@@ -1501,7 +1512,7 @@ const printReceipt = () => {
               className="form-control mb-2"
               name="room_no"
               value={complaint.room_no}
-              onChange={handleComplaintChange} disabled
+              onChange={handleComplaintChange} 
             />
 
             Complaint Type<span className="text-danger">*</span>
