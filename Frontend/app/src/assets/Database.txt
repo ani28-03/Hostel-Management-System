@@ -68,6 +68,8 @@ INSERT INTO payments (room_no, type, amount, due_date, paid_date, isPaid) VALUES
 ('201','rent',12000,'2025-12-10',null,false),
 ('201','electricity',1100,'2025-12-10','2025-12-03 19:13:41',true);
 
+ALTER TABLE payments ADD transaction_id VARCHAR(100), ADD bank_name VARCHAR(100);
+
 select * from payments;
 
 

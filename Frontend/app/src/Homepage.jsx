@@ -96,8 +96,6 @@ export default function Homepage(){
 
   try {
     if (
-      !complaint.guest_name ||
-      !complaint.room_no ||
       !complaint.comp_type ||
       !complaint.complaint
     ) {
@@ -264,10 +262,12 @@ export default function Homepage(){
   //prefilled guest_name for Complaint Model
   const handleOpenComplaintModal = () => {
   const storedName = localStorage.getItem("student_name") || "";
+  const storedRoom = localStorage.getItem("student_room") || "";
 
   setComplaint(prev => ({
     ...prev,
-    guest_name: storedName
+    guest_name: storedName,
+    room_no:storedRoom
   }));
 };
 
@@ -344,7 +344,12 @@ const handleBooking = async () => {
   dueDate.setDate(dueDate.getDate() + 3);
   const formattedDueDate = dueDate.toISOString().split("T")[0];
 
+  const out_Date = new Date();
+  out_Date.setDate(out_Date.getDate() + 31);
+  const check_o_Date = out_Date.toISOString().split("T")[0];
+
   localStorage.setItem("due_date",formattedDueDate);
+  localStorage.setItem("check_out_Date",check_o_Date);
 
 
   try {
@@ -358,8 +363,16 @@ const handleBooking = async () => {
       transaction_id: transactionId,
       bank_name: bankName
     });
-
-    await DashboardServices.addStudent(student);
+    await DashboardServices.add({
+      guest_name:localStorage.getItem("student_name"), 
+      room_no:localStorage.getItem("student_room"), 
+      check_in_date:formattedDueDate, 
+      check_out_date:check_o_Date,
+      email:student.email,
+      mobile:student.mobile,
+      designation:student.designation
+    });
+    // await DashboardServices.addStudent(student);
     await DashboardServices.addUserInfo(newuser);
 
     alert("Payment successful & booking confirmed!");
@@ -459,10 +472,11 @@ const printReceipt = () => {
               {isStudentLoggedIn?(
                 <ul className="dropdown-menu dropdown-menu-end animated-dropdown">
                   <li className="dropdown-animate"><a className="dropdown-item" onClick={()=>setActiveTab("profile")}>Profile</a></li>
-                  <li className="dropdown-animate"><a className="dropdown-item" href="#rooms-header">MyRoom</a></li>
-                  {/*<li className="dropdown-animate"><a className="dropdown-item" href="#">Report an Issue</a></li>*/}
-                  <li className="dropdown-animate"><a className="dropdown-item" href="#"data-bs-toggle="modal" data-bs-target="#complaintModal" onClick={handleOpenComplaintModal}>Report an Issue </a></li>
-
+                  {selectedRoom?(
+                    <li className="dropdown-animate"><a className="dropdown-item" href="#"data-bs-toggle="modal" data-bs-target="#complaintModal" onClick={handleOpenComplaintModal}>Report an Issue </a></li>
+                  ):(
+                    <li className="dropdown-animate"><a className="dropdown-item" href="#rooms-header">Rooms</a></li>
+                  )}
                   <li className="dropdown-animate"><a className="dropdown-item" href="#">Student Life</a></li>
                   <li className="dropdown-animate"><a className="dropdown-item" href="#footer_col4">Contact us</a></li>
                 </ul>
@@ -470,7 +484,7 @@ const printReceipt = () => {
                 <ul className="dropdown-menu dropdown-menu-end animated-dropdown">
                   <li className="dropdown-animate"><a className="dropdown-item" href="#rooms-header">Rooms</a></li>
                   <li className="dropdown-animate"><a className="dropdown-item" href="#facilities">Facilities</a></li>
-                  <li className="dropdown-animate"><a className="dropdown-item" href="#">Student Life</a></li>
+                  {/* <li className="dropdown-animate"><a className="dropdown-item" href="#facilities">Student Life</a></li> */}
                   <li className="dropdown-animate"><a className="dropdown-item" href="#footer_col4">Contact us</a></li>
                 </ul>
             )}
@@ -1263,7 +1277,7 @@ const printReceipt = () => {
               className="form-control mb-2"
               name="room_no"
               value={complaint.room_no}
-              onChange={handleComplaintChange}
+              onChange={handleComplaintChange} disabled
             />
 
             Complaint Type<span className="text-danger">*</span>

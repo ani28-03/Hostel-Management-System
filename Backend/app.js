@@ -14,7 +14,7 @@ app.use(cors());
 const db = sql.createConnection({
     host:"localhost",
     user:"root",
-    password:"Gargi@2412",
+    password:"qwerty",
     database:"project",
     dateStrings:true
 });
@@ -67,7 +67,7 @@ const changeComplaint = "update complaints set is_resolved=1  where comp_id=?";
 const changeMaintain ="UPDATE maintenance SET status=? WHERE main_id=?";
 
 
-const add = "insert into booking_info(booking_id,guest_name, room_no, check_in_date, check_out_date,email,mobile,designation) values(?,?,?,?,?,?,?,?)";
+const add = "insert into booking_info(guest_name, room_no, check_in_date, check_out_date,email,mobile,designation) values(?,?,?,?,?,?,?)";
 const addRoom = "insert into rooms(room_no, floor, type, rent, deposit, ac, wifi, tv, parking, meals) values(?,?,?,?,?,?,?,?,?,?)";
 const addNewStudent = "insert into booking_info(guest_name,email,mobile,designation) values(?,?,?,?);";
 const addUserInfo = "UPDATE user_info SET gender = ?, dob = ?,aadhar = ?, address = ?, city = ?, state = ?, pincode = ?, org_name = ?, org_id = ? WHERE guest_name = ?";
