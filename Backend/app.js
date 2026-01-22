@@ -217,14 +217,14 @@ app.put("/maintenance/status/:id", (req, res) => {
 
 
 app.post("/tenants", (req, res) => {
-    const { booking_id, guest_name, room_no, check_in_date, check_out_date,email,mobile,designation} = req.body;
+    const { guest_name, room_no, check_in_date, check_out_date,email,mobile,designation} = req.body;
     console.log(req.body);
-    db.query(add, [booking_id, guest_name, room_no, check_in_date, check_out_date,email,mobile,designation], (err, results) => {
+    db.query(add, [guest_name, room_no, check_in_date, check_out_date,email,mobile,designation], (err, results) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
 
-        return res.json({ booking_id, guest_name, room_no, check_in_date, check_out_date,email,mobile,designation });
+        return res.json({guest_name, room_no, check_in_date, check_out_date,email,mobile,designation });
     });
 });
 
@@ -292,7 +292,7 @@ app.post("/payments", (req, res) => {
     transaction_id,
     bank_name
   } = req.body;
-
+  console.log(req.body);
   const paid_date = isPaid ? new Date() : null;
 
   db.query(

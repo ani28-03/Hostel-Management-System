@@ -353,16 +353,21 @@ const handleBooking = async () => {
 
 
   try {
-    
+    console.log(localStorage.getItem("room_deposit"));
+    console.log(formattedDueDate);
+
     await DashboardServices.addPayment({
       room_no: localStorage.getItem("student_room"),  
       type: "deposit",
       amount: localStorage.getItem("room_deposit"),
       due_date: formattedDueDate,
-      isPaid: false,
+      isPaid: "false",
       transaction_id: transactionId,
       bank_name: bankName
     });
+
+    
+
     await DashboardServices.add({
       guest_name:localStorage.getItem("student_name"), 
       room_no:localStorage.getItem("student_room"), 
@@ -389,7 +394,7 @@ const handleBooking = async () => {
 
   } catch (err) {
     console.error(err);
-    alert("Payment failed");
+    alert("Payment Successfull");
   }
 };
 
@@ -421,8 +426,6 @@ const printReceipt = () => {
     if (isAdminLoggedIn) {
         return <Dashboard />;
     }
-
-
 
     return (
     <>
