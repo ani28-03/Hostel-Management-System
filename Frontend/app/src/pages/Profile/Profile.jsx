@@ -74,15 +74,18 @@ export default function Profile(){
     
     return(
         <>
-        <h1 id='setting-title'>Settings</h1><hr/>
+        <h3 id='setting-title' className='ms-3 mt-2'>Settings</h3><hr/>
+
+        
 
         <div className="container-fluid">
             <div className="Settings-tabs">
                 <div className="col-md-6">
                 
                 {/* Profile tab */}
-                <div id='profile-tab' className="settings-item"><h3>Profile</h3>
-                    <img id="profile" src={`../public/Students/${username}.jpg`}/>
+                <div id='profile-tab' className="settings-item"><h3>{username.toUpperCase()}</h3>
+                {/* <h2>{username.toUpperCase()}</h2> */}
+                    <img id="profile" src={`../public/Tenants/blank.png`}/>
                 </div>
 
                 {/*My Room*/}
@@ -120,9 +123,9 @@ export default function Profile(){
                         <input id='currPassword' type={showPassword?"text":"password"} value={password} disabled/>
                         {/* Eye icon  */}
                         {showPassword?(
-                            <FontAwesomeIcon icon={['far', 'eye-slash']} className="show-password" onMouseLeave={() => setshowPassword(false)}/>
+                            <FontAwesomeIcon icon={['far', 'eye-slash']} className="show-password me-2" onMouseLeave={() => setshowPassword(false)}/>
                         ):(
-                            <FontAwesomeIcon icon={['far', 'eye']} className="show-password" onMouseEnter={() => setshowPassword(true)}/>
+                            <FontAwesomeIcon icon={['far', 'eye']} className="show-password me-5" onMouseEnter={() => setshowPassword(true)}/>
                         )
                         }
                         {/*Change Password */}

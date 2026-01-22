@@ -11,7 +11,7 @@ export default function Homepage(){
     const [userName,setUserName] = useState("");
     const [password,setPassword] = useState("");
     const [confirmPassword,setconfirmPassword] = useState("");
-    const pg_name = "CDAC HOSTEL";
+    const pg_name = "HOSTELLER";
 
     const [activeTab, setActiveTab] = useState("home");
     const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
@@ -861,7 +861,7 @@ const printReceipt = () => {
                 <h4 className='mt-4 ms-4' onClick={()=>setActiveTab("home")} style={{ cursor: "pointer" }}><FontAwesomeIcon icon={['fas', 'circle-left']}/> Back</h4>
               </div>
               
-              {/* Room cards  */}
+              {/* Double Rooms  */}
               <div id='card-row' className="row">
                 {rooms.filter(room => room.type === "double").map((room) => (
                   <div key={room.room_no} className="col-md-8">
@@ -869,10 +869,9 @@ const printReceipt = () => {
 
                       <div className="row">
 
-                        {/* LEFT COLUMN ──────────── */}
                         <div className="col-md-4">
 
-                          {/* IMAGE CAROUSEL */}
+                          {/* img carousel */}
                           <div id={`roomCarousel${room.room_no}`} className="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
 
                             <div className="carousel-indicators">
@@ -955,7 +954,7 @@ const printReceipt = () => {
                           {/* Room number/type */}
                           <div className="d-flex justify-content-between align-items-center mb-3">
                             <h3 className="fw-bold">Room {room.room_no}
-                              {(room.type=="single")?(
+                              {(room.type=="double")?(
                               <span id='room-type' className='badge bg-info ms-3 px-3 py-2 fs-6'>{room.type.toUpperCase()}</span> 
                             ):(
                               <span id='room-type' className='badge bg-warning ms-3 px-3 py-2 fs-6'>{room.type.toUpperCase()}</span> 
@@ -1033,6 +1032,28 @@ const printReceipt = () => {
                             Description of the room. Description of the room.
                           </p>
 
+                          {/* Book the room */}
+                          {isStudentLoggedIn?(
+                            <div className="row">
+                            <div className="col-md-9"></div>
+                            <button
+                              className='col-md-2 bg-warning text-black'
+                              data-bs-toggle="modal"
+                              data-bs-target="#userInfoModal"
+                              onClick={() => handleOpenBooking(room)}>
+                              Select Room
+                            </button>
+                          </div>
+                          ):(
+                            <div className="row">
+                            <div className="col-md-9"></div>
+                            {/* <button className='col-md-2 bg-warning text-black'>Select Room</button> */}
+                            <button className='col-md-2 bg-warning text-black' data-bs-toggle="modal" data-bs-target="#loginModal">
+                              Select Room
+                            </button>
+                          </div>
+                          )}
+                          
                         </div>
                       </div>
 
@@ -1043,8 +1064,211 @@ const printReceipt = () => {
             
           </div>}
 
+          {/* Ensuite Rooms  */}
+          {activeTab === "ensuite" && <div className="tabContent"> 
+            <div className="row">
+                <h4 className='mt-4 ms-4' onClick={()=>setActiveTab("home")} style={{ cursor: "pointer" }}><FontAwesomeIcon icon={['fas', 'circle-left']}/> Back</h4>
+              </div>
+            <div id='card-row' className="row">
+                {rooms.filter(room => room.type === "ensuite").map((room) => (
+                  <div key={room.room_no} className="col-md-8">
+                    <div id='homepage-col-card' className="card border-0 rounded-4 p-3 homepage-card-body">
 
-          {activeTab === "ensuite" && <div className="tabContent"> <h1>Ensuite</h1> </div>}
+                      <div className="row">
+
+                        <div className="col-md-4">
+
+                          {/* img carousel */}
+                          <div id={`roomCarousel${room.room_no}`} className="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+
+                            <div className="carousel-indicators">
+                                <button
+                                    type="button"
+                                    data-bs-target={`#roomCarousel${room.room_no}`}
+                                    data-bs-slide-to="0"
+                                    className="active">
+                                  </button>
+
+                                <button
+                                    type="button"
+                                    data-bs-target={`#roomCarousel${room.room_no}`}
+                                    data-bs-slide-to="1">
+                                  </button>
+
+                                <button
+                                    type="button"
+                                    data-bs-target={`#roomCarousel${room.room_no}`}
+                                    data-bs-slide-to="2">
+                                </button>
+                            </div>
+
+                            <div id='homepage-room-photo' className="carousel-inner">
+
+                              {/* image:1 */}
+                              <div className="carousel-item active">
+                                <img
+                                  src={`Rooms/${room.room_no}.jpg`}
+                                  onError={(e) => {
+                                    e.target.onerror = null;
+                                    e.target.src = "Rooms/blank.png"; //Backup photo
+                                  }}
+                                  className="d-block w-100 rounded"
+                                  style={{ height: "300px", objectFit: "cover" }}
+                                />
+                              </div>
+
+                              {/* image:2 */}
+                              <div className="carousel-item">
+                                <img
+                                  src={`Rooms/${room.room_no}.jpg`}
+                                  onError={(e) => {
+                                    e.target.onerror = null;
+                                    e.target.src = "Rooms/blank.png"; //Backup photo
+                                  }}
+                                  className="d-block w-100 rounded"
+                                  style={{ height: "300px", objectFit: "cover" }}
+                                />
+                              </div>
+
+                              {/* image:3 */}
+                              <div className="carousel-item">
+                                <img
+                                  src={`Rooms/${room.room_no}.jpg`}
+                                  onError={(e) => {
+                                    e.target.onerror = null;
+                                    e.target.src = "Rooms/blank.png"; //Backup photo
+                                  }}
+                                  className="d-block w-100 rounded"
+                                  style={{ height: "300px", objectFit: "cover" }}
+                                />
+                              </div>
+
+                            </div>
+
+                            {/* Carousel Controls */}
+                            <button className="carousel-control-prev" type="button" data-bs-target={`#roomCarousel${room.room_no}`} data-bs-slide="prev">
+                              <span className="carousel-control-prev-icon"></span>
+                            </button>
+                            <button className="carousel-control-next" type="button" data-bs-target={`#roomCarousel${room.room_no}`} data-bs-slide="next">
+                              <span className="carousel-control-next-icon"></span>
+                            </button>
+                          </div>
+
+                        </div>
+
+                        <div className="col-md-8">
+
+                          {/* Room number/type */}
+                          <div className="d-flex justify-content-between align-items-center mb-3">
+                            <h3 className="fw-bold">Room {room.room_no}
+                              {(room.type=="ensuite")?(
+                              <span id='room-type' className='badge bg-info ms-3 px-3 py-2 fs-6'>{room.type.toUpperCase()}</span> 
+                            ):(
+                              <span id='room-type' className='badge bg-warning ms-3 px-3 py-2 fs-6'>{room.type.toUpperCase()}</span> 
+                            )}
+                            </h3>
+                            
+                            {/* Available status  */}
+                            {!room.guest_name ? (
+                              <span className="badge bg-success px-3 py-2 fs-6">Vacant</span>
+                            ) : (
+                              <span className="badge bg-primary px-3 py-2 fs-6">
+                                Available from: <b>{room.check_out_date || "N/A"}</b>
+                              </span>
+                            )}
+                          </div>
+
+                          {/* basic room details */}
+                          <div className="row text-center mb-4">
+                            <div className="col-md-4">
+                              <p className="text-muted mb-0">Floor</p>
+                              <h5 className="fw-bold">{room.floor}</h5>
+                            </div>
+
+                            <div className="col-md-4">
+                              <p className="text-muted mb-0">Rent</p>
+                              <h5 className="fw-bold">₹{room.rent}</h5>
+                            </div>
+
+                            <div className="col-md-4">
+                              <p className="text-muted mb-0">Deposit</p>
+                              <h5 className="fw-bold">₹{room.deposit}</h5>
+                            </div>
+                          </div>
+
+                          {/* amenities */}
+                          <div className="d-flex flex-wrap gap-3">
+
+                            {room.ac === 1 && (
+                              <span className="badge bg-light text-dark px-3 py-2 shadow-sm">
+                                <FontAwesomeIcon icon={['fas', 'wind']} /> AC
+                              </span>
+                            )}
+
+                            {room.wifi === 1 && (
+                              <span className="badge bg-light text-dark px-3 py-2 shadow-sm">
+                                <FontAwesomeIcon icon={['fas', 'wifi']} /> Wifi
+                              </span>
+                            )}
+
+                            {room.tv === 1 && (
+                              <span className="badge bg-light text-dark px-3 py-2 shadow-sm">
+                                <FontAwesomeIcon icon={['fas', 'tv']} /> TV
+                              </span>
+                            )}
+
+                            {room.parking === 1 && (
+                              <span className="badge bg-light text-dark px-3 py-2 shadow-sm">
+                                <FontAwesomeIcon icon={['fas', 'square-parking']} /> Parking
+                              </span>
+                            )}
+
+                            {room.meals === 1 && (
+                              <span className="badge bg-light text-dark px-3 py-2 shadow-sm">
+                                <FontAwesomeIcon icon={['fas', 'utensils']} /> Meals
+                              </span>
+                            )}
+
+                          </div>
+
+                          <hr className="my-4" />
+
+                          {/* About room */}
+                          <p className="text-muted">
+                            Description of the room. Description of the room. Description of the room. 
+                            Description of the room. Description of the room.
+                          </p>
+
+                          {/* Book the room */}
+                          {isStudentLoggedIn?(
+                            <div className="row">
+                            <div className="col-md-9"></div>
+                            <button
+                              className='col-md-2 bg-warning text-black'
+                              data-bs-toggle="modal"
+                              data-bs-target="#userInfoModal"
+                              onClick={() => handleOpenBooking(room)}>
+                              Select Room
+                            </button>
+                          </div>
+                          ):(
+                            <div className="row">
+                            <div className="col-md-9"></div>
+                            {/* <button className='col-md-2 bg-warning text-black'>Select Room</button> */}
+                            <button className='col-md-2 bg-warning text-black' data-bs-toggle="modal" data-bs-target="#loginModal">
+                              Select Room
+                            </button>
+                          </div>
+                          )}
+                          
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>}
 
 
           {activeTab === "profile" && <div className="tabContent"> <div><Profile/></div> </div>}
