@@ -14,7 +14,7 @@ app.use(cors());
 const db = sql.createConnection({
     host:"localhost",
     user:"root",
-    password:"qwerty",
+    password:"Gargi@2412",
     database:"project",
     dateStrings:true
 });
@@ -75,7 +75,8 @@ const addNewUsername = "insert into user_info(guest_name,username,password,isAdm
 const addPayment = "INSERT INTO payments(room_no, type, amount, due_date, paid_date, isPaid, transaction_id, bank_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
 const addComplaints = "insert into complaints(comp_id, guest_name, room_no, comp_type, complaint, comp_date, is_resolved) values(?,?,?,?,?,?,?)";
-const addMaintenance = "INSERT INTO maintenance(main_type, amount, main_date, main_description,status) VALUES (?,?,?,?,'pending')";
+const addMaintenance = "INSERT INTO maintenance (main_type, amount, main_date, main_description, status) VALUES (?,?,?,?,?)";
+
 
 
 
@@ -205,15 +206,25 @@ app.put("/complaints/:comp_id",(req,res)=>{
     })
 })
 
-app.put("/maintenance/status/:id", (req, res) => {
+app.put("/maintenance/:id", (req, res) => {
+  const { id } = req.params;
   const { status } = req.body;
 
-  db.query(changeMaintain,[status, req.params.id],(err) => {
-      if (err) return res.status(500).json(err);
-      res.json({ message: "Status updated" });
+  const sql = "UPDATE maintenance SET status = ? WHERE main_id = ?";
+
+  db.query(sql, [status, id], (err, result) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
     }
-  );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Maintenance record not found" });
+    }
+
+    res.json({ message: "Status updated successfully" });
+  });
 });
+
 
 
 app.post("/tenants", (req, res) => {
@@ -343,21 +354,35 @@ app.post("/complaints" ,(req, res) => {
 
 // maintainance
 app.post("/maintenance", (req, res) => {
-  const { main_type, amount, main_date, main_description, status } = req.body;
+  const {
+    main_type,
+    amount,
+    main_date,
+    main_description,
+    status
+  } = req.body;
 
   db.query(
     addMaintenance,
-    [main_type, amount, main_date, main_description,status],
+    [
+      main_type,
+      amount,
+      main_date,
+      main_description,
+      status || "pending"   // fallback safety
+    ],
     (err, results) => {
       if (err) {
         return res.status(500).json({ error: err.message });
       }
+
       res.status(201).json({
-        message: "Maintenance record added successfully",
+        message: "Maintenance record added successfully"
       });
     }
   );
 });
+
 
 app.delete("/tenants/:booking_id",(req,res)=>{
     const {booking_id} = req.params;

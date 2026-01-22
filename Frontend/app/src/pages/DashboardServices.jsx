@@ -18,6 +18,8 @@ export const DashboardServices = {
     changePassword: async (username,newPassword) => (await axios.put(`${base}/changePassword/${username}`,{password:newPassword})).data,
     changePaid: async (payment_id,rec) => (await axios.put(`${base}/payments/${payment_id}`,rec)).data,
     changeComplaint: async (comp_id,rec) => (await axios.put(`${base}/complaints/${comp_id}`,rec)).data,
+    updateMaintenanceStatus: async (id, data) =>(await axios.put(`${base}/maintenance/${id}`, data)).data,
+
 
     add: async (rec) => (await axios.post(base + "/tenants", rec)).data,
     addRoom: async (rec) => (await axios.post(base + "/rooms", rec)).data,
@@ -33,3 +35,6 @@ export const DashboardServices = {
     removePayment: async (payment_id) => (await axios.delete(`${base}/payments/${payment_id}`)).data,
     removeMaintenance: async (main_id) => (await axios.delete(`${base}/maintenance/${main_id}`)).data,
 };
+
+export default DashboardServices;
+

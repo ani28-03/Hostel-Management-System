@@ -5,14 +5,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 export default function Maintenance() {
   const [maintenance, setMaintenance] = useState([]);
   const [showForm, setShowForm] = useState(false);
-
-  const [form, setForm] = useState({
-    main_id: "",
-    main_type: "",
-    amount: "",
-    main_date: "",
-    main_description: "",
-  });
+   
+   const [form, setForm] = useState({
+  main_type: "",
+  amount: "",
+  main_date: "",
+  main_description: "",
+  status: "pending"
+});
 
   const loadMaintenance = async () => {
     const data = await DashboardServices.getMaintenance();
@@ -31,11 +31,13 @@ export default function Maintenance() {
   e.preventDefault();
 
   await DashboardServices.addMaintenance({
-    main_type: form.main_type,
-    amount: form.amount,
-    main_date: form.main_date,
-    main_description: form.main_description,
-  });
+  main_type: form.main_type,
+  amount: Number(form.amount),
+  main_date: form.main_date,
+  main_description: form.main_description,
+  status: form.status
+});
+
 
   setForm({
     main_id: "",
